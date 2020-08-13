@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block extra_head %}
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+<script src="https://code.highcharts.com/highcharts.src.js"></script>
+<script type="text/javascript" src="{% static 'dalme_helpers/homepage.js' %}"></script>
+<script>
+  var user = { "id": "{{ user.id }}", "username": "{{ user.username }}" }
+</script>
+{% endblock %}
+{% block extra-dropdowns %}{% endblock %}
+{% block extra-sidebar %}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="card shadow mb-3">
+    <div class="card-header card-tabs-header">
+      <ul class="nav nav-tabs card-header-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="data-tab" data-toggle="tab" href="#data" role="tab" aria-controls="data" aria-selected="true">Data</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content h-100">
+      <div class="tab-pane border-bottom-0 card-body active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="row">
+          <div class="col-md-12">
+            {% include "cards/my_tasks.html" %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            {% include "cards/my_worksets.html" %}
+          </div>
+          <div class="col-md-6">
+            {% include "cards/problem_tickets.html" %}
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane border-bottom-0 card-body p-0 clearfix" id="data" role="tabpanel" aria-labelledby="data-tab">
+        <div class="card-deck m-4">
+          <div id="chart1" class="card p-2"></div>
+          <div id="chart2" class="card"></div>
+        </div>
+        <script>
+          $.ajax({
+              method: "GET",
+              url: "/api/datasets/?id=1"
+          }).done(function(data, textStatus, jqXHR) {
+              Highcharts.chart("chart1", data);
+          }).fail(function(jqXHR, textStatus, errorThrown) {
+              toastr.error('There was an error retieving the data: '+errorThrown);
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+<script> $(document).ready(function() { init_tables() }); </script>
+{% endblock %}

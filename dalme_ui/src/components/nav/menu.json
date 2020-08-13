@@ -1,0 +1,194 @@
+[
+  {
+    "label": "Dashboard",
+    "icon": "fas fa-tachometer-alt",
+    "to": "/"
+  },
+  {
+    "subheader": true,
+    "label": "Content",
+    "permissions": ["Users", "Staff", "Administrators", "Developers"]
+  },
+  {
+    "label": "Sources",
+    "icon": "fas fa-bookmark",
+    "items": [
+      {
+        "label": "All Sources",
+        "icon": "fas fa-asterisk",
+        "to": "/cities"
+      },
+      {
+        "label": "Archives",
+        "icon": "fas fa-landmark",
+        "to": "/sources?type=archives"
+      },
+      {
+        "label": "Archival Files",
+        "icon": "fas fa-archive",
+        "to": "/sources?type=files"
+      },
+      {
+        "label": "Records",
+        "icon": "fas fa-list-ol",
+        "to": "/sources?type=records"
+      },
+      {
+        "label": "Bibliography",
+        "icon": "fas fa-book",
+        "to": "/models"
+      }
+    ]
+  },
+  {
+    "label": "DAM Images",
+    "icon": "fas fa-images",
+    "to": "/images"
+  },
+  {
+    "label": "Lexicon",
+    "icon": "fas fa-book",
+    "items": [
+      {
+        "label": "Dictionary",
+        "icon": "fas fa-language",
+        "to": "#"
+      },
+      {
+        "label": "Corpus",
+        "icon": "fas fa-stream",
+        "to": "#"
+      },
+      {
+        "label": "Wordforms",
+        "icon": "fas fa-bars",
+        "to": "#"
+      },
+      {
+        "label": "Headwords",
+        "icon": "fas fa-list",
+        "to": "#"
+      },
+      {
+        "label": "Concepts",
+        "icon": "fas fa-lightbulb",
+        "to": "#"
+      }
+    ]
+  },
+  {
+    "subheader": true,
+    "label": "Admin",
+    "permissions": ["Users", "Staff", "Administrators", "Developers"]
+  },
+  {
+    "label": "Project",
+    "icon": "fas fa-briefcase",
+    "permissions": ["Users", "Staff", "Administrators", "Developers"],
+    "items": [
+      {
+        "label": "Issue Tickets",
+        "icon": "fas fa-ticket-alt",
+        "to": "/tickets",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Tasks",
+        "icon": "fas fa-tasks",
+        "to": "/tasks",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Sets",
+        "icon": "fas fa-layer-group",
+        "to": "/sets",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      }
+    ]
+  },
+  {
+    "label": "System",
+    "icon": "fas fa-cog",
+    "permissions": ["Users", "Staff", "Administrators", "Developers"],
+    "items": [
+      {
+        "label": "Asynchronous Tasks",
+        "to": "/async_tasks",
+        "icon": "fas fa-tasks",
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "label": "Cities",
+        "to": "/cities",
+        "icon": "fas fa-city",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Countries",
+        "to": "/countries",
+        "icon": "fas fa-globe",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Languages",
+        "to": "/languages",
+        "icon": "fas fa-language",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Users",
+        "to": "/users",
+        "icon": "fas fa-users",
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "label": "Django Admin",
+        "to": "/django_admin",
+        "icon": "fas fa-user-cog",
+        "permissions": ["Administrators", "Developers"]
+      }
+    ]
+  },
+  {
+    "subheader": true,
+    "label": "Dev",
+    "permissions": ["Developers"]
+  },
+  {
+    "label": "Data Models",
+    "icon": "fas fa-cubes",
+    "permissions": ["Developers"],
+    "items": [
+      {
+        "label": "Content Types",
+        "to": "/models/content_types",
+        "icon": "fas fa-cube",
+        "permissions": ["Developers"]
+      },
+      {
+        "label": "Attribute Types",
+        "to": "/models/attribute_types",
+        "icon": "fas fa-cube",
+        "permissions": ["Developers"]
+      },
+      {
+        "label": "DataTables Fields",
+        "to": "/models/dt_fields",
+        "icon": "fas fa-cube",
+        "permissions": ["Developers"]
+      }
+    ]
+  },
+  {
+    "label": "Scripts",
+    "to": "/scripts",
+    "icon": "fas fa-code",
+    "permissions": ["Developers"]
+  },
+  {
+    "label": "Pages",
+    "to": "/pages",
+    "icon": "fas fa-file",
+    "permissions": ["Developers"]
+  }
+]

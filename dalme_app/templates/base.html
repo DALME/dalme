@@ -1,4 +1,5 @@
 {% load static i18n %}
+{% load render_bundle from webpack_loader %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,155 +22,36 @@
     <meta name="msapplication-config" content="{% static '/icons/browserconfig.xml' %}">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-colvis-1.5.6/fh-3.1.4/r-2.2.2/sc-2.0.0/sl-1.3.0/datatables.min.css"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'Editor-1.9.0/css/editor.bootstrap4.css' %}">
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-colvis-1.5.6/fh-3.1.4/r-2.2.2/sc-2.0.0/sl-1.3.0/datatables.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.19/dataRender/datetime.js"></script>
-    <script type="text/javascript" src="{% static 'Editor-1.9.0/js/dataTables.editor.js' %}"></script>
-    <script type="text/javascript" src="{% static 'Editor-1.9.0/js/editor.bootstrap4.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.default.min.css" integrity="sha256-ibvTNlNAB4VMqE5uFlnBME6hlparj5sEr1ovZ3B/bNA=" crossorigin="anonymous" />
-    <script type="text/javascript" src="{% static 'Editor-1.9.0/js/editor.selectize.js' %}"></script>
-    <link href="{% static 'Editor-1.9.0/css/editor.selectize.css' %}" rel="stylesheet">
-    <link href="{% static 'jquery-ui/jquery-ui.min.css' %}" rel="stylesheet">
-    <script type="text/javascript" src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'Editor-1.9.0/js/editor.autoComplete.js' %}"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" integrity="sha256-R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha256-yNbKY1y6h2rbVcQtf0b8lq4a+xpktyFc3pSYoGAY1qQ=" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{% static 'js/dalme_app.js' %}"></script>
-    <link href="{% static 'css/dalme_app.css' %}" rel="stylesheet">
-    <script>
-      $(document).ready(function () {
-          $(document).click(function (event) {
-              var clickover = $(event.target);
-              var _opened = $(".navbar-collapse").hasClass("show");
-              if (_opened === true && !clickover.hasClass("navbar-toggler")) { $(".navbar-toggler").click(); }
-          });
-          dalme_startup();
-          {% if messages %}
-              {% for message in messages %}
-                toastr.{{ message.tags }}('{{ message | safe }}');
-              {% endfor %}
-          {% endif %}
-      });
-    </script>
+    <!-- <script type="text/javascript" src="{% static 'js/dalme_app.js' %}"></script> -->
+    <!-- <link href="{% static 'css/dalme_app.css' %}" rel="stylesheet"> -->
     {% block extra_head %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </head>
 <body id="page-top">
-  <div id="wrapper">
-  {% block sidebar %}
-    <ul class="navbar-nav bg-gradient-sidebar sidebar sidebar-dark accordion {{ sidebar_toggle }}" id="accordionSidebar">
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-        <img class="dalme-logo" height="40" src="{% static 'images/dalme_logo.svg'%}" alt="DALME">
-        <div class="sidebar-brand-text mx-3">DALME</div>
-      </a>
-      {% for item in sidebar %}
-        {{ item|safe }}
-      {% endfor %}
-      {% block extra_sidebar %}{% endblock %}
-      <hr class="sidebar-divider d-none d-md-block mt-3">
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle" onclick="update_session({var:'sidebar_toggle'})"></button>
-      </div>
-    </ul>
-  {% endblock %}
-    <div id="content-wrapper" class="d-flex flex-column">
-      <div id="content">
-        {% block topbar %}
-        <nav class="navbar navbar-expand navbar-light topbar-dalme topbar mb-4 static-top shadow-sm">
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
-          <div class="page_title">{{ page_chain | safe }}</div>
-          <ul class="navbar-nav ml-auto">
-            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-            <li class="nav-item dropleft topbar-border-left" id="searchIcon" data-toggle="tooltip" data-placement="bottom" title="Search DALME" data-delay='{"show":"1000", "hide":"0"}'>
-              <a class="nav-link" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-g"></i>
-              </a>
-              <!-- Dropdown - Search -->
-              <div class="dropdown-menu dropdown-menu-right animated--grow-in search-slider" aria-labelledby="searchDropdown">
-                <form class="form-inline navbar-search" role="form" method="get" id="search-form" enctype="multipart/form-data" action="/search">
-                  {% csrf_token %}
-                  <input id="topbar_search" type="text" class="form-control border-0 small" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2" name="q" value='{{ query|default:"" }}' required>
-                </form>
-              </div>
-            </li>
-            {% block extra_dropdowns %}{% endblock %}
-            {% for item in dropdowns %}
-                {{ item|safe }}
-            {% endfor %}
-            <!-- Nav Item - User Information -->
-            <li class="nav-item dropdown no-arrow topbar-border-left">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-user-circle fa-g mr-2"></i> {{ request.user.profile.full_name }}
-              </a>
-              <!-- Dropdown - User Information -->
-              <div class="dropdown-menu dropdown-menu-right animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="https://dalme.org/wp/wp-admin/profile.php">
-                  <i class="fas fa-user fa-fw mr-2 text-gray-400"></i> Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-cog fa-fw mr-2 text-gray-400"></i> Settings
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-list fa-fw mr-2 text-gray-400"></i> Activity Log
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-fw mr-2 text-gray-400"></i> Logout
-                </a>
-              </div>
-            </li>
-            <!-- Nav Item - Full screen toggle -->
-            <li class="nav-item no-arrow topbar-border-left" id="fullScreenToggle">
-              <a class="nav-link" href="#" role="button" onclick="full_screen_mode('on')">
-                  <i class="fas fa-expand fa-g"></i>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!-- End of Topbar -->
-        {% endblock %}
-        <!-- Begin Page Content -->
-        {% block content %}{% endblock %}
-        </div>
-        <!-- End of Main Content -->
-  </div>
-  <!-- End of Content Wrapper -->
-</div>
-<!-- End of Page Wrapper -->
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-  <i class="fas fa-angle-up"></i>
-</a>
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logout-modal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="logout_title">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-      </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="/logout/">Logout</a>
-      </div>
+  <div class="layout-wrapper layout-static">
+		<div id="topbar"><topbar @menu-toggle="onMenuToggle"></topbar></div>
+    <div id="sidebar">
+        <transition name="layout-sidebar">
+            <div :class="sidebarClass" @click="onSidebarClick" v-show="isSidebarVisible()">
+                <div class="layout-logo">
+                    <img alt="Logo" src="/static/images/dalme_logo.svg" style="width: 50px;"/>
+                </div>
+
+                <profile></profile>
+                <sidebar :model="menu" @menuitem-click="onMenuItemClick"></sidebar>
+            </div>
+        </transition>
     </div>
-  </div>
-</div>
-<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+    {% render_bundle 'chunk-vendors' %}
+    {% render_bundle 'main' %}
+		<div class="layout-main">
+      {% block content %}
+      {% endblock %}
+		</div>
+
+		<AppFooter />
+	</div>
+
 {% block extra_scripts %}
 {% endblock %}
 </body>

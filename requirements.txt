@@ -18,3 +18,5 @@ boto3==1.9.170
 redis==3.4.1
 djangosaml2idp==0.7.2
 drf-access-policy==0.6.1
+django-webpack-loader==0.7.0
+django-utils-six==2.0

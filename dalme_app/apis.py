@@ -33,6 +33,60 @@ from dalme_app.access_policies import SourceAccessPolicy
 from dalme_app.utils import IsOwnerOrReadOnly
 
 
+class CityList(viewsets.ModelViewSet):
+    """ API endpoint for managing cities """
+    queryset = CityReference.objects.all()
+    serializer_class = CitySerializer
+    dt_fields = [
+        {'header': "ID", 'field': "id"},
+        {'header': "City Name", 'field': "name"},
+        {'header': "Administrative Region", 'field': "administrative_region"},
+        {'header': "Country", 'field': "country.name"}
+    ]
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, args, kwargs)
+        response.data['headers'] = self.dt_fields
+        return response
+
+    def get_queryset(self, *args, **kwargs):
+        sort_field = self.request.GET.get('sortBy', False)
+        sort_desc = self.request.GET.get('sortDesc', False)
+        search = self.request.GET.get('search', False)
+        queryset = self.queryset
+
+        # fields = ['name', 'administrative_region', 'country__name']
+        # fields = CitySerializer.Meta.fields
+        fields = [i['field'] for i in self.dt_fields if i['field'] not in ['id']]
+
+        if search:
+            if '+' in search:
+                search = search.split('+')
+            else:
+                search = [search]
+            search_q = Q()
+            for s in search:
+                for f in fields:
+                    search_word = Q(**{'%s__icontains' % f: s})
+                    search_q |= search_word
+            # queryset = queryset.filter(search_q).distinct()
+            queryset = queryset.filter(search_q)
+
+        if sort_field:
+            if ',' in sort_field:
+                sort_field = sort_field.split(',')
+                sort_desc = sort_desc.split(',')
+            else:
+                sort_field = [sort_field]
+                sort_desc = [sort_desc]
+
+            filters = ['-' + f if sort_desc[i] == 'true' else f for i, f in enumerate(sort_field)]
+
+            queryset = queryset.order_by(*filters)
+
+        return queryset
+
+
 class Datasets(viewsets.ViewSet):
     """ API endpoint for generating lists of options for DTE forms """
     permission_classes = (DjangoModelPermissions,)

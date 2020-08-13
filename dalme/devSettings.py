@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'djangosaml2idp',
     'corsheaders',
     'rest_framework',
+    'webpack_loader',
     #'oidc_provider',
     'storages'
 ]
@@ -85,6 +86,18 @@ MIDDLEWARE = [
     #'django.middleware.locale.LocaleMiddleware'
 ]
 
+FRONTEND_DIR = os.path.join(BASE_DIR, 'dalme_ui')
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'vue/',
+        'STATS_FILE': os.path.join(FRONTEND_DIR, 'webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+    }
+}
 
 ROOT_URLCONF = 'dalme.devUrls'
 
