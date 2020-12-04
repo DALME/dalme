@@ -205,50 +205,25 @@
         }
       };
 
-      const destoryFolio = () => {
-        // doing this instead of calling the destory() method because of known issue:
-        // https://github.com/DDMAL/diva.js/issues/498
-        // Useful event to access elements in diva before they get destroyed. Used by the highlight plugin.
-        const { settings } = window.folio;
-        console.log( settings);
-        // Cancel any pending request retrieving a manifest
-        if (settings.pendingManifestRequest && settings.pendingManifestRequest.abort)
-            settings.pendingManifestRequest.abort();
-
-        // Removes the hide-scrollbar class from the body
-        jQuery('body').removeClass('diva-hide-scrollbar');
-
-        // Empty the parent container and remove any diva-related data
-        jQuery(settings.parentObject).parent().empty().removeData('diva');
-
-        // Remove any additional styling on the parent element
-        jQuery(settings.parentObject).parent().removeAttr('style').removeAttr('class');
-
-        // Clear the Events cache
-        // diva.Events.unsubscribeAll(settings.ID);
-      }
-
       const renderImage = ({ pageId, zoomLevel, imageId }) => {
         const node = $('#diva_viewer');
         node.empty();
-        console.log('render image', pageId, zoomLevel, imageId);
-        window.folio = new Diva('diva_viewer', {
-          objectData:`{{db_url}}pages/${pageId}/manifest/`,
-          enableAutoTitle: false,
-          enableFullscreen: false,
-          enableKeyScroll: false,
-          blockMobileMove: false,
-          enableSpaceScroll: false,
-          enableGotoPage: false,
-          enableGridIcon: false,
-          enableGridControls: false,
-          enableImageTitles: false,
-          enableToolbar: false,
-          adaptivePadding: 0,
-          fixedPadding: 0,
-          zoomLevel: zoomLevel || 2,
-        });
-        window.folioPageId = pageId;
+          window.folio = new Diva('diva_viewer', {
+            objectData:`{{db_url}}pages/${pageId}/manifest/`,
+            enableAutoTitle: false,
+            enableFullscreen: false,
+            enableKeyScroll: false,
+            blockMobileMove: false,
+            enableSpaceScroll: false,
+            enableGotoPage: false,
+            enableGridIcon: false,
+            enableGridControls: false,
+            enableImageTitles: false,
+            enableToolbar: false,
+            adaptivePadding: 0,
+            fixedPadding: 0,
+            zoomLevel: zoomLevel,
+          });
       };
 
       const renderRights = (notice) => {
@@ -319,12 +294,8 @@
               resizeWidth: false,
               onDragEnd: function() {
                   Diva.Events.publish('PanelSizeDidChange');
-                  destoryFolio();
-                  renderImage({
-                    pageId: window.folioPageId,
-                    zoomLevel: window.folio.settings.zoomLevel,
-                    imageId: null
-                  });
+                  window.folio.destroy();
+                  renderImage(data);
               },
             })
             .css({ width: '' });
@@ -340,12 +311,8 @@
               onDragEnd: function() {
                 if (data.imageId) {
                   Diva.Events.publish('PanelSizeDidChange');
-                  destoryFolio();
-                  renderImage({
-                    pageId: window.folioPageId,
-                    zoomLevel: window.folio.settings.zoomLevel,
-                    imageId: null
-                  });
+                  window.folio.destroy();
+                  renderImage(data);
                 }
               },
             })
@@ -359,12 +326,8 @@
         resizeWidth: $('.vertical-split').length ? true : false,
         onDragEnd: function() {
           Diva.Events.publish('PanelSizeDidChange');
-          destoryFolio();
-          renderImage({
-            pageId: window.folioPageId,
-            zoomLevel: window.folio.settings.zoomLevel,
-            imageId: null
-          });
+          window.folio.destroy();
+          renderImage(data);
         }
       });
 
