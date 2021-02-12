@@ -1,0 +1,169 @@
+/* MAIN NAVIGATION UI */
+
+#dalme-nav {
+  box-shadow: 0 0 20px #000000c2;
+  background-image: radial-gradient(ellipse at 10%, #154d69, #1b1b1b);
+}
+#dalme-nav > div:first-of-type {
+  border-bottom: 1px solid #263238;
+}
+#dalme-nav .q-toolbar {
+  min-height: 40px;
+}
+#dalme-nav .dalme-nav-menus {
+  background: #00000073 !important;
+}
+#dalme-nav button i {
+  font-size: 12px !important;
+}
+#dalme-nav .q-bar {
+  padding: 0 20px;
+}
+#dalme-nav .q-bar > .q-btn {
+  margin: 0;
+}
+#dalme-nav .q-breadcrumbs {
+  font-size: 12px;
+}
+#dalme-nav .bg-tbar-separator {
+  background: #455a6473 !important;
+}
+#dalme-nav .q-breadcrumbs a:hover {
+  color: #fff;
+}
+#navbar_search .q-field__append i {
+  font-size: 12px;
+}
+#navbar_search .q-field__bottom {
+  position: absolute;
+  padding: 0 12px;
+}
+
+
+/* TEMPORARY RULES - overrides for old DALME css */
+
+input:focus {
+  box-shadow: none !important;
+}
+
+/* GENERAL RULES */
+main {
+  padding: 0 4rem;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 72px);
+}
+content {
+  display: flex;
+  box-shadow: 0px 11px 20px 0px rgb(0 0 0 / 50%);
+  width: 100%;
+}
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/* HOMEPAGE */
+
+.homepage-container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem 2rem;
+  flex: 0 0 100%;
+}
+
+/* QUASAR GENERAL OVERRIDES */
+
+.q-item__section--side > .q-icon {
+  font-size: 14px;
+}
+.q-list--dense > .q-item {
+  min-height: 26px;
+  padding: 0 18px 0 14px;
+}
+.q-uploader .q-btn .q-icon {
+  font-size: 1.4em;
+}
+.q-field__marginal {
+  font-size: 16px;
+}
+.q-field--labeled.q-field--dense .q-field__native,
+.q-field--labeled.q-field--dense .q-field__prefix,
+.q-field--labeled.q-field--dense .q-field__suffix {
+  padding-top: 16px;
+  padding-bottom: 2px;
+}
+.q-select--multiple.q-field--dense.q-field--labeled .q-field__native {
+  padding-top: 0;
+}
+.q-textarea.q-field--dense.q-field--labeled .q-field__native {
+  padding-top: 5px;
+}
+.q-field--auto-height.q-field--dense.q-field--labeled .q-field__control-container {
+  padding-top: 18px;
+}
+.q-chip--dense .q-chip__content {
+  padding-left: 3px;
+  padding-right: 3px;
+  line-height: 15px;
+}
+.q-chip--dense .q-chip__icon {
+  font-size: 1.1em;
+}
+.q-field--filled.q-field--highlighted .q-field__control:before {
+  background: rgba(0,0,0,0.02)
+}
+.filled-in_form .q-uploader__list {
+  border-bottom: 1px solid #efefef;
+  border-left: 1px solid #efefef;
+  border-right: 1px solid #efefef;
+}
+.q-dialog__backdrop {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+/* STACKED ICONS */
+
+.fa-stack-container {
+  position: relative;
+  line-height: 1.5;
+  margin-right: 1px;
+}
+
+.fa-stack-base {
+  font-size: 14px;
+}
+
+.fa-stack-detail {
+  right: 2px;
+  top: 6px;
+  position: absolute;
+  font-size: 6px;
+  color: white;
+}
+
+/* TEXT STYLES */
+
+.text-h7 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  letter-spacing: 0.0125em;
+}
+
+.custom-dialogue .q-card {
+  width: 50%;
+  padding: 10px;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.dialogue-top-blue {
+  border-top: 5px solid #01579b;
+  padding-top:  10px;
+  border-radius: 0 !important;
+}

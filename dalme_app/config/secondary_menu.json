@@ -1,0 +1,124 @@
+[{
+    "label": "Data Management",
+    "icon": "fas fa-table",
+    "children": [
+      {
+        "label": "Countries",
+        "url": "/countries",
+        "icon": "fas fa-globe",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Languages",
+        "url": "/languages",
+        "icon": "fas fa-language",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Library",
+        "url": "/library",
+        "icon": "fas fa-book-reader",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Locales",
+        "url": "/locales",
+        "icon": "fas fa-city",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Rights Policies",
+        "url": "/rights",
+        "icon": "fas fa-copyright",
+        "permissions": ["Staff", "Administrators", "Developers"]
+      }
+    ]
+  },
+  {
+    "label": "Project Management",
+    "icon": "fas fa-tools",
+    "children": [
+      {
+        "label": "Issue Tickets",
+        "url": "/tickets",
+        "icon": "fas fa-ticket-alt",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Task Manager",
+        "url": "/tasks",
+        "icon": "fas fa-tasks",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "User Manager",
+        "url": "/users",
+        "icon": "fas fa-users",
+        "permissions": ["Administrators", "Developers"]
+      }
+    ]
+  },
+  {
+    "label": "System Administration",
+    "icon": "fas fa-cog",
+    "permissions": ["Administrators", "Developers"],
+    "children": [
+      {
+        "label": "Admin Interface",
+        "url": "/admin",
+        "icon": "fas fa-wrench",
+        "dropdown": false,
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "label": "Data Models",
+        "icon": "fas fa-cubes",
+        "dropdown": true,
+        "permissions": ["Developers"],
+        "children": [
+          {
+            "label": "Content Types",
+            "url": "/models/content-types",
+            "icon": "fas fa-cube"
+          },
+          {
+            "label": "Attribute Types",
+            "url": "/models/attribute-types",
+            "icon": "fas fa-cube"
+          }
+        ]
+      },
+      {
+        "label": "Config Editor",
+        "url": "/tools/config-editor",
+        "icon": "fas fa-laptop-code",
+        "dropdown": false,
+        "permissions": ["Developers"]
+      },
+      {
+        "label": "Scripts",
+        "url": "/tools/scripts",
+        "icon": "fas fa-code",
+        "dropdown": false,
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "label": "System Settings",
+        "url": "/tools/settings",
+        "icon": "fas fa-sliders-h",
+        "dropdown": false,
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "divider": true
+      },
+      {
+        "label": "Test Page",
+        "url": "/tools/test",
+        "icon": "fas fa-code",
+        "dropdown": false,
+        "permissions": ["Administrators", "Developers"]
+      }
+    ]
+  }
+]

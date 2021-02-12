@@ -1,0 +1,45 @@
+<template v-for="section in secondaryMenu">
+  <q-separator vertical color="grey-9"></q-separator>
+  <q-btn flat stretch dense :icon="section.icon" size="xs" padding="0 15px">
+    <q-tooltip>${section.label}</q-tooltip>
+    <q-menu fit anchor="bottom right" self="top right">
+      <q-list dense padding class="text-grey-9">
+        <template v-for="item in section.children">
+          <q-separator spaced v-if="item.divider"></q-separator>
+          <template v-else-if="item.dropdown">
+            <q-separator></q-separator>
+            <q-item clickable>
+                <q-item-section class="col-auto q-mr-xs">
+                  <q-icon :name="item.icon" size="14px"></q-icon>
+                </q-item-section>
+                <q-item-section>${item.label}</q-item-section>
+                <q-item-section side>
+                  <q-icon name="fas fa-caret-right"></q-icon>
+                </q-item-section>
+                <q-menu fit anchor="top end" self="top start">
+                  <q-list dense padding class="text-grey-9">
+                  <template v-for="child in item.children">
+                    <q-item clickable v-close-popup @click="go(child.url)">
+                      <q-item-section class="col-auto q-mr-xs">
+                        <q-icon :name="child.icon" size="14px"></q-icon>
+                      </q-item-section>
+                      <q-item-section>${child.label}</q-item-section>
+                    </q-item>
+                  </template>
+                  </q-list>
+                </q-menu>
+            </q-item>
+            <q-separator></q-separator>
+          </template>
+          <q-item v-else clickable v-close-popup @click="go(item.url)">
+            <q-item-section class="col-auto q-mr-xs">
+              <q-icon :name="item.icon" size="14px"></q-icon>
+            </q-item-section>
+            <q-item-section>${item.label}</q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </q-menu>
+  </q-btn>
+  <q-separator vertical color="grey-9"></q-separator>
+</template>

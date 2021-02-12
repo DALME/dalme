@@ -1,6 +1,6 @@
 {% load static i18n compress %}
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -23,19 +23,24 @@
     <meta name="msapplication-config" content="{% static '/icons/browserconfig.xml' %}">
     <meta name="theme-color" content="#ffffff">
     <!-- analytics -->
-    <script async defer data-domain="db.dalme.org" src="https://plausible.io/js/plausible.js"></script>
-    <!-- Lodash -->
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
-    <!-- Fontawesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <!--script async defer data-domain="db.dalme.org" src="https://plausible.io/js/plausible.js"></script-->
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+
+
+
+    <!-- OLD STUFF - HERE FOR TEMPORARY COMPATIBILITY ONLY! ######################################### -->
+    <!-- Lodash -->
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" integrity="sha256-ur/YlHMU96MxHEsy3fHGszZHas7NzH4RQlD4tDVvFhw=" crossorigin="anonymous"></script>
+    <!-- JQuery stuff -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <link href="{% static 'js/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'js/jquery-ui/jquery-ui.min.js' %}"></script>
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link href="{% static 'css/bootstrapcustom.min.css' %}" rel="stylesheet">
+    <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous"-->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.21/b-1.6.3/b-colvis-1.6.3/cr-1.5.2/fc-3.3.1/fh-3.1.7/kt-2.5.2/r-2.2.5/rg-1.1.2/rr-1.2.7/sp-1.1.1/sl-1.3.1/datatables.min.css"/>
@@ -51,175 +56,206 @@
     <!-- other -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" integrity="sha256-R91pD48xW+oHbpJYGn5xR0Q7tMhH4xOrWn1QqMRINtA=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha256-yNbKY1y6h2rbVcQtf0b8lq4a+xpktyFc3pSYoGAY1qQ=" crossorigin="anonymous"></script>
-    <!-- DALME CSS START -->
+    <!-- DALME CSS -->
+    <link href="{% static 'css/dalme_app/_alerts.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_comments_module.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_dt_rendering.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_dte_forms.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_general.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_sidebar.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_topbar.css' %}" rel="stylesheet">
+    <link href="{% static 'css/dalme_app/_workflow_manager.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/dalme_app/dalme_util.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dalme_app/dalme_app.js' %}"></script>
+    <script>
+      $(document).ready(function () {
+          dalme_startup({% if helpers %}"{{ helpers | safe }}"{% endif %});
+          {% if messages %}
+              {% for message in messages %}
+                toastr.{{ message.tags }}('{{ message | safe }}');
+              {% endfor %}
+          {% endif %}
+      });
+    </script>
+    <!-- END OLD STUFF - ########################################################################## -->
+
+
+
+
+    <!-- QUASAR -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@^4.0.0/animate.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/quasar@1.15.2/dist/quasar.min.css" rel="stylesheet" type="text/css">
+    <!-- DALME -->
     {% compress css %}
-      <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_alerts.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_comments_module.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_dt_rendering.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_dte_forms.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_general.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_sidebar.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_topbar.css' %}" rel="stylesheet">
-      <link href="{% static 'css/dalme_app/_workflow_manager.css' %}" rel="stylesheet">
+      <link href="{% static 'css/dalme_app/general.css' %}" rel="stylesheet">
     {% endcompress %}
-    <!-- DALME CSS END -->
-    <!-- DALME JS START -->
-    {% compress js %}
-      <script type="text/javascript" src="{% static 'js/dalme_app/dalme_util.js' %}"></script>
-      <script type="text/javascript" src="{% static 'js/dalme_app/dalme_app.js' %}"></script>
-    {% endcompress %}
-      {{ preferences|json_script:"user-preferences" }}
-      <script>
-        api_endpoint = "{{ api_endpoint }}";
-        db_endpoint = "{{ db_endpoint }}";
-      </script>
-      <script>
-        $(document).ready(function () {
-            $(document).click(function (event) {
-                var clickover = $(event.target);
-                var _opened = $(".navbar-collapse").hasClass("show");
-                if (_opened === true && !clickover.hasClass("navbar-toggler")) { $(".navbar-toggler").click(); }
-            });
-            dalme_startup({% if helpers %}"{{ helpers | safe }}"{% endif %});
-            {% if messages %}
-                {% for message in messages %}
-                  toastr.{{ message.tags }}('{{ message | safe }}');
-                {% endfor %}
-            {% endif %}
-        });
-      </script>
-    <!-- DALME JS END -->
+    <script>
+      api_endpoint = "{{ api_endpoint }}";
+      db_endpoint = "{{ db_endpoint }}";
+    </script>
+
+
+
+
+    <!-- OLD STUFF - HERE FOR TEMPORARY COMPATIBILITY ONLY! ######################################### -->
+    {% if helpers %}
+      {% for helper in helpers %}
+        {% with 'js/dalme_helpers/'|add:helper|add:'.js' as helper_static %}
+          <script type="text/javascript" src="{% static helper_static %}"></script>
+        {% endwith %}
+      {% endfor %}
+    {% endif %}
+    <!-- END OLD STUFF - ########################################################################## -->
+
+
+
+
     {% block extra_head %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </head>
-<body id="page-top">
-  <div id="wrapper">
-  {% block sidebar %}
-    <ul class="navbar-nav bg-gradient-sidebar sidebar sidebar-dark accordion {% if sidebar_toggle %} toggled {% endif %}" id="accordionSidebar">
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-        <img class="dalme-logo" height="40" src="{% static 'images/dalme_logo.svg'%}" alt="DALME">
-        <div class="sidebar-brand-text mx-3">DALME</div>
-      </a>
-      {% for item in sidebar %}
-        {{ item|safe }}
-      {% endfor %}
-      {% block extra_sidebar %}{% endblock %}
-      <hr class="sidebar-divider d-none d-md-block mt-3">
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle" onclick="update_session({var:'sidebar_toggle'})"></button>
+<body>
+  <div id="dalme-nav">
+    <template>
+      <div class="row no-wrap">
+        <q-toolbar class="dalme-logo-bg text-white col-auto q-px-md">
+          <q-avatar square color="white" size="sm">
+            <img height="20" src="{% static 'images/dalme_logo.svg'%}" alt="DALME">
+          </q-avatar>
+          <q-toolbar-title class="text-subtitle1"><strong>DALME</strong> DB</q-toolbar-title>
+        </q-toolbar>
+        {% include "dalme_app/includes/_navbar_main.html" %}
+        <q-toolbar class="text-grey-5 col-auto q-pa-none">
+          <q-separator dark vertical color="tbar-separator"></q-separator>
+          {% include "dalme_app/includes/_navbar_search.html" %}
+          <q-separator dark vertical color="tbar-separator"></q-separator>
+          {% include "dalme_app/includes/_navbar_help.html" %}
+          <q-separator dark vertical color="tbar-separator"></q-separator>
+          {% include "dalme_app/includes/_navbar_user.html" %}
+          <q-separator dark vertical color="tbar-separator"></q-separator>
+          <q-btn
+            flat
+            stretch
+            dense
+            :icon="fullScreen ? 'fas fa-compress' : 'fas fa-expand'"
+            size="xs"
+            padding="0 15px"
+            @click="toggle_full_screen">
+          </q-btn>
+        </q-toolbar>
       </div>
-    </ul>
+      <q-bar class="bg-grey-10 text-grey-6 q-px-md text-weight-medium">
+        {% include "dalme_app/includes/_breadcrumb.html" %}
+        <q-space></q-space>
+        {% include "dalme_app/includes/_navbar_secondary.html" %}
+      </q-bar>
+    </template>
+  </div>
+  <main id="main" class="main" role="main">
+    <content class="content-container">
+      {% block content %}{% endblock %}
+    </content>
+  </main>
+  {% block extra_scripts %}
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.2/dist/quasar.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.2/dist/icon-set/fontawesome-v5.umd.min.js"></script>
+  <script>{% include "dalme_app/includes/vue-components/CreateIssueTicket.js" %}</script>
+  {{ page_context | json_script:"context-data" }}
+  <script>
+    Quasar.iconSet.set(Quasar.iconSet.fontawesomeV5);
+    const dalme_nav = new Vue({
+      el: '#dalme-nav',
+      delimiters: ['${', '}'],
+      mounted() {},
+      created() {
+        window.addEventListener("resize", this.windowResized);
+        document.addEventListener("fullscreenchange", function(event) {
+          dalme_nav.$data.fullScreen = document.fullscreenElement ? true : false;
+        });
+        this.preferences = this.contextData.preferences;
+        this.breadcrumb = this.contextData.breadcrumb;
+        this.user = this.contextData.user;
+        this.mainMenu = this.contextData.main_menu;
+        this.secondaryMenu = this.contextData.secondary_menu;
+      },
+      data: {
+        apiEndpoint: "{{ api_endpoint}}",
+        dbEndpoint: "{{ db_endpoint }}",
+        preferences: null,
+        breadcrumb: null,
+        user: null,
+        mainMenu: null,
+        secondaryMenu: null,
+        windowWidth: window.innerWidth,
+        fullScreen: document.fullscreenElement == null ? false : true,
+        query: "{{ form.0.query.value|default_if_none:'' }}",
+      },
+      watch: {
+
+      },
+      computed: {
+        contextData() {
+          const node = document.getElementById('context-data');
+          document.getElementsByTagName("BODY")[0].removeChild(node);
+          return JSON.parse(node.textContent);
+        },
+        compactMode() {
+          return this.windowWidth <= 850;
+        },
+      },
+      methods: {
+        go(url) {
+          window.location.href = url;
+        },
+        logout() {
+          this.$q.dialog({
+            title: 'Ready to leave?',
+            message: 'Select <span class="text-weight-medium text-light-blue-10">Log out</span> below if you are ready to end your current session.',
+            ok: {
+              label: 'Log out',
+              flat: true,
+              color: 'light-blue-10',
+              dense: true,
+              'no-caps': true
+            },
+            cancel: {
+              label: 'Cancel',
+              flat: true,
+              color: 'grey-6',
+              dense: true,
+              'no-caps': true
+            },
+            persistent: true,
+            html: true,
+            'content-class': 'custom-dialogue'
+          }).onOk(() => {
+            this.go('/logout/')
+          })
+        },
+        report_issue() {
+          this.$q.dialog({
+            component: 'CreateIssueTicket',
+            parent: this,
+          })
+        },
+        search_help() {
+          console.log('search_help')
+        },
+        toggle_full_screen() {
+          if (!this.fullScreen) {
+            this.$q.fullscreen.request();
+          } else {
+            this.$q.fullscreen.exit();
+          }
+        },
+        windowResized() {
+          this.windowWidth = window.innerWidth;
+        },
+      },
+    })
+  </script>
   {% endblock %}
-    <div id="content-wrapper" class="d-flex flex-column">
-      <div id="content">
-        {% block topbar %}
-        <nav class="navbar navbar-expand navbar-light topbar-dalme topbar mb-4 static-top shadow-sm">
-          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-            <i class="fa fa-bars"></i>
-          </button>
-          <div class="page_title">{{ page_chain | safe }}</div>
-          <ul class="navbar-nav ml-auto">
-            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-            <li class="nav-item dropleft topbar-border-left" id="searchIcon" data-toggle="tooltip" data-placement="bottom" title="Search DALME" data-delay='{"show":"1000", "hide":"0"}'>
-              <a class="nav-link" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-g"></i>
-              </a>
-              <!-- Dropdown - Search -->
-              <div class="dropdown-menu dropdown-menu-right animated--grow-in search-slider" aria-labelledby="searchDropdown">
-                <form class="form-inline navbar-search" role="form" method="post" id="search-form" enctype="multipart/form-data" action="/search/">
-                  {% csrf_token %}
-                  {{ form.management_form }}
-                  <input
-                    type="text"
-                    class="topbar_search form-control border-0 small"
-                    id="{{ form.0.query.id_for_label }}"
-                    name="{{ form.0.query.html_name }}"
-                    value="{{ form.0.query.value|default_if_none:'' }}"
-                    placeholder="Search"
-                    autocomplete="off"
-                    autocorrect="off"
-                    autocapitalize="off"
-                    spellcheck="false"
-                    aria-label="Search"
-                    required
-                  >
-                </form>
-              </div>
-            </li>
-            {% block extra_dropdowns %}{% endblock %}
-            {% for item in dropdowns %}
-                {{ item|safe }}
-            {% endfor %}
-            <!-- Nav Item - User Information -->
-            <li class="nav-item dropdown no-arrow topbar-border-left">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-user-circle fa-g mr-2"></i> {{ request.user.profile.full_name }}
-              </a>
-              <!-- Dropdown - User Information -->
-              <div class="dropdown-menu dropdown-menu-right animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="/users/{{ request.user.username }}/">
-                  <i class="fas fa-user fa-fw mr-2 text-gray-400"></i> Profile
-                </a>
-                <a class="dropdown-item" href="/users/{{ request.user.username }}/?preferences">
-                  <i class="fas fa-cog fa-fw mr-2 text-gray-400"></i> Preferences
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-fw mr-2 text-gray-400"></i> Logout
-                </a>
-              </div>
-            </li>
-            <!-- Nav Item - Full screen toggle -->
-            <li class="nav-item no-arrow topbar-border-left" id="fullScreenToggle">
-              <a class="nav-link" href="#" role="button" onclick="full_screen_mode('on')">
-                  <i class="fas fa-expand fa-g"></i>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!-- End of Topbar -->
-        {% endblock %}
-        <!-- Begin Page Content -->
-        {% block content %}{% endblock %}
-        </div>
-        <!-- End of Main Content -->
-  </div>
-  <!-- End of Content Wrapper -->
-</div>
-<!-- End of Page Wrapper -->
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-  <i class="fas fa-angle-up"></i>
-</a>
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logout-modal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="logout_title">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-      </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="/logout/">Logout</a>
-      </div>
-    </div>
-  </div>
-</div>
-{% if helpers %}
-  {% for helper in helpers %}
-    {% with 'js/dalme_helpers/'|add:helper|add:'.js' as helper_static %}
-      {% compress js %}
-        <script type="text/javascript" src="{% static helper_static %}"></script>
-      {% endcompress %}
-    {% endwith %}
-  {% endfor %}
-{% endif %}
-{% block extra_scripts %}
-{% endblock %}
 </body>
 </html>

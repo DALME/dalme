@@ -1,0 +1,120 @@
+[{
+    "label": "Sources",
+    "icon": "fas fa-bookmark",
+    "children": [
+      {
+        "label": "Archives",
+        "url": "/sources?class=archives",
+        "icon": "fas fa-landmark"
+      },
+      {
+        "label": "Archival Files",
+        "url": "/sources?class=archival-files",
+        "icon": "fas fa-archive"
+      },
+      {
+        "label": "Records",
+        "url": "/sources?class=records",
+        "icon": "fas fa-list-ol"
+      },
+      {
+        "label": "Bibliography",
+        "url": "/sources?class=bibliography",
+        "icon": "fas fa-book"
+      },
+      {
+        "divider": true
+      },
+      {
+        "label": "DAM Images",
+        "url": "/images",
+        "icon": "fas fa-images"
+      }
+    ]
+  },
+  {
+    "label": "Sets",
+    "icon": "fas fa-clone",
+    "children": [
+      {
+        "label": "Corpora",
+        "url": "/sets/?type=corpora",
+        "icon": ["fas fa-clone", "fas fa-archive"],
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "label": "Collections",
+        "url": "/sets/?type=collections",
+        "icon": ["fas fa-clone", "fas fa-globe"],
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Datasets",
+        "url": "/sets/?type=datasets",
+        "icon": ["fas fa-clone, fas fa-database"],
+        "permissions": ["Administrators", "Developers"]
+      },
+      {
+        "label": "Worksets",
+        "url": "/sets/?type=worksets",
+        "icon": ["fas fa-clone", "fas fa-cog"],
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      }
+    ]
+  },
+  {
+    "label": "Entities",
+    "icon": "fas fa-atom",
+    "children": [
+      {
+        "label": "Agents",
+        "url": "/agents/",
+        "icon": "fas fa-hospital-user",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Objects",
+        "url": "#",
+        "icon": "fas fa-mortar-pestle",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      },
+      {
+        "label": "Places",
+        "url": "/places/",
+        "icon": "fas fa-sign",
+        "permissions": ["Users", "Staff", "Administrators", "Developers"]
+      }
+    ]
+  },
+  {
+    "label": "Lexicon",
+    "icon": "fas fa-atlas",
+    "children": [
+      {
+        "label": "Dictionary",
+        "url": "#",
+        "icon": "fas fa-language"
+      },
+      {
+        "label": "Corpus",
+        "url": "#",
+        "icon": "fas fa-stream"
+      },
+      {
+        "label": "Wordforms",
+        "url": "#",
+        "icon": "fas fa-bars"
+      },
+      {
+        "label": "Headwords",
+        "url": "#",
+        "icon": "fas fa-list"
+      },
+      {
+        "label": "Concepts",
+        "url": "#",
+        "icon": "fas fa-lightbulb"
+      }
+    ]
+  }
+]

@@ -1,0 +1,40 @@
+<q-btn flat stretch dense size="sm" padding="0 15px">
+  <q-avatar size="sm">
+    <img :src="user.avatar">
+  </q-avatar>
+  <q-menu fit anchor="bottom right" self="top right">
+    <div class="row q-px-md q-pt-md">
+      <div class="column q-mr-sm">
+        <q-avatar size="50px" rounded>
+          <img :src="user.avatar">
+        </q-avatar>
+      </div>
+      <div class="column">
+        <div class="text-capitalize text-subtitle1 text-weight-bold">${user.full_name}</div>
+        <div class="text-caption">${user.username} (${user.id})</div>
+      </div>
+    </div>
+    <q-list dense padding class="text-grey-9">
+      <q-separator spaced></q-separator>
+      <q-item clickable v-close-popup class="q-px-lg" @click="go(dbEndpoint + '/users/' + user.username + '/')">
+        <q-item-section class="col-auto q-mr-xs">
+          <q-icon name="fas fa-user" size="14px"></q-icon>
+        </q-item-section>
+        <q-item-section>Profile</q-item-section>
+      </q-item>
+      <q-item clickable v-close-popup @click="go(dbEndpoint + '/users/' + user.username + '/?preferences')">
+        <q-item-section class="col-auto q-mr-xs">
+          <q-icon name="fas fa-user-cog" size="14px"></q-icon>
+        </q-item-section>
+        <q-item-section>Preferences</q-item-section>
+      </q-item>
+      <q-separator spaced></q-separator>
+      <q-item clickable v-close-popup @click='logout'>
+        <q-item-section class="col-auto q-mr-xs">
+          <q-icon name="fas fa-sign-out-alt" size="14px"></q-icon>
+        </q-item-section>
+        <q-item-section>Log out</q-item-section>
+      </q-item>
+    </q-list>
+  </q-menu>
+</q-btn>

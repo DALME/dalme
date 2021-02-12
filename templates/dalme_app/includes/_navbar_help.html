@@ -1,0 +1,30 @@
+<q-btn flat stretch dense icon="fas fa-question-circle" size="xs" padding="0 15px">
+  <q-menu anchor="bottom right" self="top right">
+    <q-list dense padding class="text-grey-9">
+
+      <q-item clickable v-close-popup @click="go('https://kb.dalme.org/')">
+        <q-item-section class="col-auto q-mr-xs">
+          <q-icon name="fas fa-file-alt" size="14px"></q-icon>
+        </q-item-section>
+        <q-item-section>Knowledge Base</q-item-section>
+      </q-item>
+
+      <q-item clickable v-close-popup @click="search_help">
+        <q-item-section class="col-auto q-mr-xs">
+          <q-icon name="fas fa-search-location" size="14px"></q-icon>
+        </q-item-section>
+        <q-item-section>Search Help</q-item-section>
+      </q-item>
+
+      <q-separator spaced></q-separator>
+
+      <q-item clickable v-close-popup @click="report_issue">
+        <q-item-section class="col-auto q-mr-xs">
+          <q-icon name="fas fa-bug" size="14px"></q-icon>
+        </q-item-section>
+        <q-item-section>Report Issue</q-item-section>
+      </q-item>
+
+    </q-list>
+  </q-menu>
+</q-btn>

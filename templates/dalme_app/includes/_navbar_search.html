@@ -1,0 +1,27 @@
+<q-form
+  id="navbar_search"
+  method="post"
+  enctype="multipart/form-data"
+  action="/search/">
+  {% csrf_token %}
+  {{ form.management_form }}
+  <q-input
+    id="{{ form.0.query.id_for_label }}"
+    name="{{ form.0.query.html_name }}"
+    dense
+    standout
+    square
+    hide-bottom-space
+    v-model="query"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+    spellcheck="false"
+    lazy-rules
+    :rules="[ val => val && val.length > 0 || 'Please type something']">
+    <template v-slot:append>
+      <q-icon v-if="query === ''" name="fas fa-search" color="grey-5"></q-icon>
+      <q-icon v-else name="fas fa-times-circle" class="cursor-pointer" color="grey-5" @click="query = ''"></q-icon>
+    </template>
+  </q-input>
+</q-form>

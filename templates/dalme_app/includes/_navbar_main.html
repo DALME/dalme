@@ -1,0 +1,25 @@
+<q-toolbar class="text-blue-grey-4 col-grow q-pa-none dalme-nav-menus">
+  <template v-for="section in mainMenu">
+    <q-btn-dropdown stretch flat size=".75rem" :icon="section.icon" :label="compactMode ? false : section.label" menu-anchor="bottom middle" menu-self="top middle">
+      <q-tooltip v-if="compactMode" v-model="showTooltips">${section.label}</q-tooltip>
+      <q-list dense padding class="text-grey-9">
+        <template v-for="item in section.children">
+          <q-separator spaced v-if="item.divider"></q-separator>
+          <q-item v-else clickable v-close-popup @click="go(item.url)">
+            <q-item-section class="col-auto q-mr-xs">
+              <template v-if="Array.isArray(item.icon)">
+                <span class="fa-stack-container">
+                  <q-icon :name="item.icon[0]" class="fa-stack-base"></q-icon>
+                  <q-icon :name="item.icon[1]" class="fa-stack-detail"></q-icon>
+                </span>
+              </template>
+              <q-icon v-else :name="item.icon" size="14px"></q-icon>
+            </q-item-section>
+            <q-item-section>${item.label}</q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </q-btn-dropdown>
+    <q-separator dark vertical color="blue-grey-10"></q-separator>
+  </template>
+</q-toolbar>

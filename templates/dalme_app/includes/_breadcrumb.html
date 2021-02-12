@@ -1,0 +1,14 @@
+<q-breadcrumbs active-color="grey-5">
+  <template v-slot:separator>
+    <q-icon size="1.1em" name="fas fa-caret-right" color="grey-7"></q-icon>
+  </template>
+  <q-breadcrumbs-el>
+    <a href="/"><q-icon name="fas fa-tachometer-alt"></q-icon></a>
+  </q-breadcrumbs-el>
+  <template v-for="crumb in breadcrumb">
+    <q-breadcrumbs-el>
+      <a :href="crumb[1]" v-if="crumb[1]">${crumb[0]}</a>
+      <span v-else>${crumb[0]}</span>
+    </q-breadcrumbs-el>
+  </template>
+</q-breadcrumbs>
