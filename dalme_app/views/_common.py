@@ -1,9 +1,10 @@
 from django.views.generic.base import TemplateView, ContextMixin
 from django.views.generic import DetailView
 from django.conf import settings
-from dalme_app.utils import DALMEMenus as dm
 from dalme_app.forms import SearchForm
 from django.forms import formset_factory
+import os
+import json
 
 
 class DALMEContextMixin(ContextMixin):
@@ -13,27 +14,28 @@ class DALMEContextMixin(ContextMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        sidebar_toggle = self.request.user.preferences['interface__sidebar_collapsed']
-        page_title = self.get_page_title()
-        breadcrumb = self.get_breadcrumb()
-        state = {
-            'breadcrumb': breadcrumb,
-            'sidebar': sidebar_toggle
-        }
-
+        user = self.request.user
+        main_menu, secondary_menu = self.get_menus()
         context.update({
             'api_endpoint': settings.API_ENDPOINT,
             'db_endpoint': settings.DB_ENDPOINT,
-            'sidebar_toggle': sidebar_toggle,
-            'dropdowns': dm(self.request, state).dropdowns,
-            'sidebar': dm(self.request, state).sidebar,
-            'page_title': page_title,
-            'page_chain': get_page_chain(breadcrumb, page_title),
+            'page_title': self.get_page_title(),
             'comments': self.comments,
             'form': formset_factory(SearchForm),
-            'preferences': self.get_preferences()
+            'preferences': self.get_preferences(),
+            'page_context': {
+                'breadcrumb': self.get_breadcrumb(),
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'full_name': user.profile.full_name,
+                    'avatar': user.profile.profile_image
+                },
+                'preferences': self.get_preferences(),
+                'main_menu': main_menu,
+                'secondary_menu': secondary_menu
+            }
         })
-
         return context
 
     def get_page_title(self):
@@ -44,10 +46,54 @@ class DALMEContextMixin(ContextMixin):
 
     def get_preferences(self):
         return {
-            'sidebar_toggle': self.request.session.get('sidebar_toggle', self.request.user.preferences['interface__sidebar_collapsed']),
             'remember_columns': self.request.session.get('remember_columns', self.request.user.preferences['interface__remember_column_visibility']),
             'list_scope': self.request.session.get('list_scope', self.request.user.preferences['interface__records_list_scope'])
         }
+
+    def get_menus(self):
+        menus = ['main_menu', 'secondary_menu']
+        results = []
+        for file in menus:
+            data = self.get_json_config(file)
+            menu = []
+            for item in data:
+                if item.get('children') is not None:
+                    children = []
+                    for child in item['children']:
+                        if child.get('permissions') is not None:
+                            if self.show_item(child):
+                                children.append(child)
+                        else:
+                            children.append(child)
+
+                    item['children'] = children
+
+                if item.get('permissions') is not None:
+                    if self.show_item(item):
+                        menu.append(item)
+                else:
+                    menu.append(item)
+
+            results.append(menu)
+
+        return results
+
+    @staticmethod
+    def get_json_config(filename):
+        file = os.path.join('dalme_app', 'config', filename + '.json')
+        with open(file, 'r') as fp:
+            return json.load(fp)
+
+    def show_item(self, item):
+        if item.get('permissions') is not None:
+            user_groups = [i.name for i in self.request.user.groups.all()]
+            result = [i for i in user_groups if i in item['permissions']]
+            if result or self.request.user.is_superuser:
+                return True
+            else:
+                return False
+        else:
+            return True
 
 
 class DALMEDetailView(DetailView, DALMEContextMixin):
