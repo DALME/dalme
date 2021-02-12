@@ -11,6 +11,9 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = ('id', 'subject', 'description', 'status', 'tags', 'url', 'file',
                   'creation_user', 'creation_timestamp')
+        extra_kwargs = {
+            'tags': {'required': False}
+            }
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -27,3 +30,17 @@ class TicketSerializer(serializers.ModelSerializer):
             attachments += '<a href="/download/{}" class="task-attachment">File</a>'.format(instance.file.file)
         ret['attachments'] = attachments
         return ret
+
+    def to_internal_value(self, data):
+        if data.get('tags') is not None:
+            self.context['tags'] = data.pop('tags')
+        return super().to_internal_value(data)
+
+    def create(self, validated_data):
+        tags = self.context.get('tags')
+        ticket = Ticket.objects.create(**validated_data)
+        if tags:
+            for tag in tags:
+                obj = {'tag_type': 'T', 'tag': tag['value']}
+                ticket.tags.create(**obj)
+        return ticket

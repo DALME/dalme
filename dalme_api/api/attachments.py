@@ -16,14 +16,9 @@ class Attachments(viewsets.ModelViewSet):
     def create(self, request, format=None):
         try:
             new_obj = Attachment()
-            new_obj.file = request.data['upload']
+            new_obj.file = request.data['file']
             new_obj.save()
-            result = {
-                'upload': {'id': new_obj.id},
-                'files': {'Attachment': {str(new_obj.id): {
-                            'filename': str(new_obj.filename),
-                            'web_path': str(new_obj.file)}}}
-                }
+            result = {'id': new_obj.id}
             status = 201
         except Exception as e:
             result = {'error': 'There was an error processing the file: ' + str(e)}
