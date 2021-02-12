@@ -1,0 +1,122 @@
+<q-dialog
+  ref="issue_ticket_dialogue"
+  v-model="issueTicket"
+  @hide="onDialogHide"
+  no-backdrop-dismiss
+  position="bottom"
+>
+  <q-card class="w-50 dialogue-top-blue">
+    <q-card-section class="q-py-none row">
+      <div class="text-h7 text-light-blue-10">Create Issue Ticket</div>
+    </q-card-section>
+    <q-form class="q-gutter-md q-pa-md">
+      <q-input
+        filled
+        dense
+        color="light-blue-10"
+        v-model="subject"
+        label="Subject"
+        hide-bottom-space
+        :error-message="errors.subject"
+        :error="errors.subject ? true : false"
+      ></q-input>
+      <q-input
+        v-model="description"
+        filled
+        dense
+        color="light-blue-10"
+        type="textarea"
+        label="Description"
+        hint="Please include as much detail as possible"
+        hide-bottom-space
+        :error-message="errors.description"
+        :error="errors.description ? true : false"
+      ></q-input>
+      <q-select
+        multiple
+        filled
+        dense
+        use-chips
+        color="light-blue-10"
+        v-model="tags"
+        :options="tagOptions"
+        options-dense
+        label="Tags"
+        hide-bottom-space
+        :error-message="errors.tags"
+        :error="errors.tags ? true : false"
+      >
+        <template v-slot:option="{ itemProps, itemEvents, opt, selected, toggleOption }">
+          <q-item
+            v-bind="itemProps"
+            v-on="itemEvents"
+            active="selected"
+            dense
+            active-class="bg-light-blue-2"
+          >
+            <q-checkbox
+              dense
+              size="sm"
+              :value="selected"
+              @input="toggleOption(opt)"
+              class="q-mr-sm"
+            ></q-checkbox>
+            <q-chip
+              :color="opt.color"
+              :label="opt.label"
+              text-color="grey-10"
+              dense
+              size="13px"
+            ></q-chip>
+          </q-item>
+        </template>
+        <template v-slot:selected-item="scope">
+          <q-chip
+            removable
+            dense
+            @remove="scope.removeAtIndex(scope.index)"
+            :tabindex="scope.tabindex"
+            :color="scope.opt.color"
+            text-color="grey-10"
+            :label="scope.opt.label"
+          ></q-chip>
+        </template>
+      </q-select>
+      <q-input
+        v-model="url"
+        filled
+        dense
+        color="light-blue-10"
+        type="url"
+        label="URL"
+        hint="A link to the page where you encountered the issue"
+        hide-bottom-space
+        :error-message="errors.url"
+        :error="errors.url ? true : false"
+      ></q-input>
+      <q-uploader
+        ref="file_uploader"
+        :url="uploadUrl"
+        method="POST"
+        :headers="uploadHeaders"
+        field-name="file"
+        with-credentials
+        style="width: auto;"
+        color="grey-2"
+        text-color="grey-7"
+        flat
+        hide-upload-btn
+        label="Attachment"
+        class="filled-in_form"
+        @added="hasFile = true"
+        @removed="hasFile = false"
+        @uploaded="upload_completed"
+        @failed="upload_failed"
+      ></q-uploader>
+    </q-form>
+    <q-card-actions align="right" class="q-px-md q-pt-none q-pb-md">
+      <q-btn flat no-caps color="grey-6" label="Cancel" @click="onCancelClick" dense></q-btn>
+      <q-btn flat no-caps color="light-blue-10" label="Submit" @click="onOKClick" dense autofocus></q-btn>
+    </q-card-actions>
+  </q-card>
+</q-dialog>
