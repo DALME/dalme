@@ -1,6 +1,5 @@
 {% extends "base.html" %}
-{% load static i18n %}
-{% load compress %}
+{% load static i18n compress %}
 {% block extra_head %}
 {% compress css %}
   <link href="{% static 'css/dalme_app/_homepage_cards.css' %}" rel="stylesheet">
@@ -12,17 +11,12 @@
   var user = { "id": "{{ user.id }}", "username": "{{ user.username }}" }
 </script>
 {% endblock %}
-{% block extra-dropdowns %}{% endblock %}
-{% block extra-sidebar %}{% endblock %}
 {% block content %}
-<div class="container-fluid">
-  <div class="d-flex flex-wrap mb-3">
-    {% if cards %}
-      {% for card in cards %}
-        {% include 'dalme_app/includes/homepage_cards/'|add:card|add:'.html' %}
-      {% endfor %}
-    {% endif %}
-  </div>
-{% endblock %}
-{% block extra_scripts %}
+<div class="homepage-container">
+  {% if cards %}
+    {% for card in cards %}
+      {% include 'dalme_app/includes/homepage_cards/'|add:card|add:'.html' %}
+    {% endfor %}
+  {% endif %}
+</div>
 {% endblock %}
