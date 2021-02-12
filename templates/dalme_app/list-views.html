@@ -19,10 +19,9 @@
   });
 </script>
 {% endblock %}
-{% block extra_dropdowns %}{% endblock %}
 {% block content %}
 <!-- Begin Page Content -->
-<div class="container-fluid">
+<div class="container-fluid bootstrapiso">
   <div class="row">
     <div class="col-md-12">
       <div class="card shadow mb-4">
@@ -39,6 +38,4 @@
     {% include 'dalme_app/includes/'|add:i|add:'.html' %}
   {% endfor %}
 {% endif %}
-{% endblock %}
-{% block extra_scripts %}
 {% endblock %}
