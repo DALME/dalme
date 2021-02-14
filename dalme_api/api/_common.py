@@ -162,6 +162,10 @@ class DALMEModelViewSet(viewsets.ModelViewSet):
         return serializer_class(*args, **kwargs)
 
     def get_serializer_class(self):
+        if self.action == 'list' and hasattr(self, 'serializer_class_list'):
+            return self.serializer_class_list
+        if self.action == 'retrieve' and hasattr(self, 'serializer_class_detail'):
+            return self.serializer_class_detail
         return self.serializer_class
 
     def get_serializer_context(self):
