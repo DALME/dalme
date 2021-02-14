@@ -16,6 +16,6 @@ from .rights_policies import RightsPolicySerializer # noqa
 from .sets import SetSerializer # noqa
 from .sources import SourceSetSerializer, SourceCreditSerializer, SourceSerializer # noqa
 from .tasks import TaskSerializer, TaskListSerializer # noqa
-from .tickets import TicketSerializer # noqa
+from .tickets import TicketSerializer, TicketDetailSerializer # noqa
 from .users import UserSerializer # noqa
 from .workflow import WorkflowSerializer # noqa

@@ -34,3 +34,23 @@ class TicketSerializer(serializers.ModelSerializer):
                 obj = {'tag_type': 'T', 'tag': tag['value']}
                 ticket.tags.create(**obj)
         return ticket
+
+
+class TicketDetailSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True, required=False)
+    creation_user = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'])
+    modification_user = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'])
+    comments = CommentSerializer(many=True, required=False)
+
+    class Meta:
+        model = Ticket
+        fields = ('id', 'subject', 'description', 'status', 'tags', 'url', 'file', 'comments',
+                  'creation_user', 'creation_timestamp', 'modification_user', 'modification_timestamp')
+        extra_kwargs = {
+            'tags': {'required': False}
+            }
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['comment_count'] = instance.comments.count()
+        return ret

@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from dalme_api.serializers import TicketSerializer
+from dalme_api.serializers import TicketSerializer, TicketDetailSerializer
 from dalme_app.models import Ticket
 from dalme_api.access_policies import TicketAccessPolicy
 from dalme_api.filters import TicketFilter
@@ -12,6 +12,7 @@ class Tickets(DALMEModelViewSet):
     permission_classes = (TicketAccessPolicy,)
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    serializer_class_detail = TicketDetailSerializer
     filterset_class = TicketFilter
     ordering = ['status', 'id']
     search_fields = ['id', 'subject', 'description', 'tags__tag', 'comments__body', 'creation_user__username', 'creation_user__profile__full_name']
