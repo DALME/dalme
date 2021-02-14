@@ -2,7 +2,7 @@
 {% load static i18n %}
 
 {% block content %}
-<div id="test-page" class="full-width">
+<div id="tickets-list" class="full-width">
   <q-toolbar class="bg-top-grey-shadow q-px-md" v-cloak>
     <div v-if="metadata">
       <q-icon name="fas fa-exclamation-circle" color="grey-6" size="xs"></q-icon>
@@ -150,14 +150,14 @@
           <div class="row items-center">
             <q-icon
               :name="props.row.status == 0 ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"
-              :color="props.row.status == 0 ? 'deep-orange-5' : 'light-green-8'"
+              :color="props.row.status == 0 ? 'green-8': 'red-8'"
               size="xs"
             ></q-icon>
             <span class="text-body1 text-weight-bold text-no-wrap q-ml-sm text-grey-9">${ props.row.subject }</span>
             <q-chip
               v-for="tag in props.row.tags"
               v-if="tag.tag != 0"
-              :color="tagColors[tag.tag]"
+              :color="get_tag_colour(tag.tag)"
               :label="tag.tag"
               text-color="grey-10"
               dense
@@ -175,7 +175,12 @@
             </div>
           </div>
           <div class="row items-center">
-            <span class="text-grey-8">#${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by ${ props.row.creation_user.full_name }</span>
+            <span v-if="props.row.status == 0" class="text-grey-8">
+              #${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by ${ props.row.creation_user.full_name }
+            </span>
+            <span v-else class="text-grey-8">
+              #${ props.row.id } by ${ props.row.creation_user.full_name } was closed ${ dalme_base.format_date(props.row.modification_timestamp, ['on ', '']) } by ${ props.row.modification_user.full_name }
+            </span>
             <q-badge v-if="props.row.url" outline color="light-blue-5" class="q-ml-sm" label="url"></q-badge>
             <q-badge v-if="props.row.file" outline color="brown-5" class="q-ml-sm" label="file"></q-badge>
           </div>
@@ -191,7 +196,7 @@
   <script>
     Quasar.iconSet.set(Quasar.iconSet.fontawesomeV5)
     const tickets = new Vue({
-      el: '#test-page',
+      el: '#tickets-list',
       delimiters: ['${', '}'],
       mounted() {
         this.on_request({
@@ -206,13 +211,6 @@
           page: 1,
           rowsPerPage: 25,
           rowsNumber: null
-        },
-        tagColors: {
-          bug: 'red-3',
-          content: 'amber-3',
-          documentation: 'light-blue-3',
-          feature: 'deep-purple-3',
-          question: 'light-green-3'
         },
         columns: [{
           name: 'ticket',
@@ -282,6 +280,9 @@
         },
         on_row_click(id) {
           window.location.href = `${dalme_base.$data.dbEndpoint}/tickets/${id}/`;
+        },
+        get_tag_colour(tag) {
+          return dalme_base.$data.tagOptions.find(o => o.value === tag).color;
         },
         clear_quick_filters() {
           for (const key in this.filters) {
