@@ -10,11 +10,12 @@ class UserSerializer(DynamicSerializer):
     groups = GroupSerializer(many=True, required=False)
     profile = ProfileSerializer(required=False)
     full_name = serializers.CharField(max_length=255, source='profile.full_name', required=False)
+    avatar = serializers.CharField(max_length=255, source='profile.profile_image', required=False)
 
     class Meta:
         model = User
         fields = ('id', 'last_login', 'is_superuser', 'username', 'first_name', 'last_name', 'full_name',
-                  'email', 'is_staff', 'is_active', 'date_joined', 'groups', 'profile', 'password')
+                  'email', 'is_staff', 'is_active', 'date_joined', 'groups', 'profile', 'password', 'avatar')
         extra_kwargs = {
             'username': {'validators': []},
             'password': {'write_only': True, 'required': False}
