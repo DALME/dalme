@@ -9,7 +9,7 @@ from ._common import DALMEListView, DALMEDetailView
 @method_decorator(login_required, name='dispatch')
 class TicketDetail(DALMEDetailView):
     model = Ticket
-    template_name = 'dalme_app/ticket_detail.html'
+    template_name = 'dalme_app/detail_views/ticket.html'
     breadcrumb = [('Project', ''), ('Issue Tickets', '/tickets')]
 
     def get_page_title(self):

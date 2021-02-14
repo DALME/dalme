@@ -63,6 +63,9 @@ a {
   color: inherit;
   text-decoration: inherit;
 }
+a:hover {
+  text-decoration: underline;
+}
 
 /* HOMEPAGE */
 
@@ -125,6 +128,9 @@ a {
 }
 .q-btn-dropdown__arrow {
   font-size: 12px !important;
+}
+.q-chip {
+  padding: 0.5em 0.7em;
 }
 /* STACKED ICONS */
 

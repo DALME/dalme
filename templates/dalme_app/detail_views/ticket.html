@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block content %}
+<div id="ticket-detail" class="full-width v-cloak">
+  <template v-if="dataset">
+    <div class="row q-px-lg q-pt-lg q-pb-md" v-if="dataset">
+      <div class="full-width row text-h4 q-pl-xs q-mb-sm">
+        <span class="text-grey-10">${ dataset.subject }</span>
+        <span class="text-weight-light text-grey-7 q-ml-sm">#${ dataset.id }</span>
+        <q-btn
+          flat
+          color="white"
+          text-color="grey-9"
+          icon="fas fa-bars"
+          style="margin-left: auto;"
+        >
+        <q-menu fit anchor="bottom right" self="top right">
+          <q-list dense padding class="text-grey-9">
+            <q-item clickable v-close-popup>
+              <q-item-section>Close ticket</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
+      </div>
+      <div class="items-center">
+        <q-chip
+          :icon="dataset.status == 0 ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"
+          :color="dataset.status == 0 ? 'green-8' : 'red-8'"
+          size="14px"
+          text-color="white"
+          class="text-weight-bold"
+          :label="dataset.status == 0 ? 'Open' : 'Closed'"
+        ></q-chip>
+        <span class="text-body2">
+          <a class="text-weight-bold" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.creation_user.username + '/'">${ dataset.creation_user.full_name }</a>
+          opened this ticket ${ dalme_base.format_date(dataset.creation_timestamp, ['on ', '']) }
+          ・ ${ dataset.comment_count } comments
+        </span>
+      </div>
+    </div>
+    <q-separator></q-separator>
+    <div class="row q-pt-lg q-mb-xl">
+      <div class="column col-9">
+        <q-list>
+          <q-item class="q-py-sm q-px-lg">
+            <q-item-section top avatar>
+              <q-avatar v-if="dataset.creation_user.avatar" size="50px" rounded>
+                <img :src="dataset.creation_user.avatar">
+              </q-avatar>
+              <q-avatar v-else size="50px" rounded icon="fas fa-user" color="light-blue-3" text-color="blue-9">
+              </q-avatar>
+            </q-item-section>
+            <q-item-section>
+              <q-card flat bordered>
+                <q-card-section class="bg-grey-2 q-py-sm">
+                  <a class="text-weight-bold" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.creation_user.username + '/'">${ dataset.creation_user.full_name }</a>
+                  commented ${ dalme_base.format_date(dataset.creation_timestamp, ['on ', '']) }
+                </q-card-section>
+                <q-separator></q-separator>
+                <q-card-section class="text-body2">
+                  ${ dataset.description }
+                </q-card-section>
+              </q-card>
+            </q-item-section>
+          </q-item>
+          <template v-if="dataset.comments" v-for="comment in dataset.comments">
+            <q-item class="q-py-sm q-px-lg">
+              <q-item-section top avatar>
+                <q-avatar v-if="comment.creation_user.avatar" size="50px" rounded>
+                  <img :src="comment.creation_user.avatar">
+                </q-avatar>
+                <q-icon v-else name="fas fa-user" size="50px" rounded>
+                </q-icon>
+              </q-item-section>
+              <q-item-section>
+                <q-card flat bordered>
+                  <q-card-section class="bg-grey-2 q-py-sm">
+                    <a class="text-weight-bold" :href="dalme_base.$data.dbEndpoint + '/users/' + comment.creation_user.username + '/'">${ comment.creation_user.full_name }</a>
+                    commented ${ dalme_base.format_date(comment.creation_timestamp, ['on ', '']) }
+                  </q-card-section>
+                  <q-separator></q-separator>
+                  <q-card-section class="text-body2">
+                    ${ comment.body }
+                  </q-card-section>
+                </q-card>
+              </q-item-section>
+            </q-item>
+          </template>
+          <q-separator inset class="q-my-lg"></q-separator>
+          <q-item class="q-py-sm q-px-lg">
+            <q-item-section top avatar>
+              <q-avatar v-if="dalme_base.$data.user.avatar" size="50px" rounded>
+                <img :src="dalme_base.$data.user.avatar">
+              </q-avatar>
+              <q-icon v-else name="fas fa-user" size="50px" rounded>
+              </q-icon>
+            </q-item-section>
+            <q-item-section>
+              <q-card flat bordered class="bg-light-blue-1">
+                <q-card-section class="q-pa-sm">
+                  <q-editor v-model="newComment" min-height="5rem"></q-editor>
+                </q-card-section>
+                <q-card-actions align="right" class="q-px-sm q-pt-none">
+                  <q-btn flat color="light-blue-9">Comment</q-btn>
+                </q-card-actions>
+              </q-card>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+      <div class="column col-3 q-pl-sm q-pt-sm q-pr-lg">
+        <div class="q-pb-md q-px-xs">
+          <div class="text-caption text-weight-medium text-grey-10 full-width q-mb-sm">Status</div>
+          <template v-if="dataset.status == 1">
+            Closed ${ dalme_base.format_date(dataset.modification_timestamp, ['on ', '']) } by
+            <a class="text-weight-bold" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.modification_user.username + '/'">
+              ${ dataset.modification_user.full_name }
+            </a>
+          </template>
+          <span v-else>Open</span>
+        </div>
+        <q-separator></q-separator>
+        <div class="q-py-md q-px-xs">
+          <div class="text-caption text-weight-medium text-grey-10 full-width q-mb-sm">Labels</div>
+          <template v-if="hasTags">
+            <q-chip
+              v-for="tag in dataset.tags"
+              v-if="tag.tag != 0"
+              :color="get_tag_colour(tag.tag)"
+              :label="tag.tag"
+              text-color="grey-10"
+              dense
+              size="13px"
+              class="q-my-none q-ml-none q-mr-xs"
+            ></q-chip>
+          </template>
+          <span v-else>None assigned</span>
+        </div>
+        <q-separator></q-separator>
+        <div class="q-py-md q-px-xs">
+          <div class="text-caption text-weight-medium text-grey-10 full-width q-mb-sm">Files</div>
+          <template v-if="dataset.file">
+          </template>
+          <span v-else>None</span>
+        </div>
+        <q-separator></q-separator>
+        <div class="q-py-md q-px-xs">
+          <div class="text-caption text-weight-medium text-grey-10 full-width q-mb-sm">Links</div>
+          <template v-if="dataset.url">
+          </template>
+          <span v-else>None</span>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script>
+    Quasar.iconSet.set(Quasar.iconSet.fontawesomeV5)
+    const ticket = new Vue({
+      el: '#ticket-detail',
+      delimiters: ['${', '}'],
+      mounted() {
+        this.get_data();
+      },
+      data: {
+        objectId: {{ object.id }},
+        dataset: null,
+        newComment: ''
+      },
+      computed: {
+        hasTags() {
+          return this.dataset.tags.find(o => o.tag != 0) ? true : false;
+        }
+      },
+      watch: {
+      },
+      methods: {
+        get_data() {
+          fetch(`${dalme_base.$data.apiEndpoint}/tickets/${this.objectId}/?format=json`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json()
+            }).then(data => {
+              this.dataset = data;
+            }).catch((error) => {
+              that.$q.notify({
+                message: `There was a problem communicating with the server. ${error}`,
+                icon: 'fas fa-times',
+                color: 'red-3',
+              });
+            });
+        },
+        get_tag_colour(tag) {
+          return dalme_base.$data.tagOptions.find(o => o.value === tag).color;
+        },
+      },
+    })
+  </script>
+{% endblock %}
