@@ -28,7 +28,7 @@ class Ticket(dalmeIntid):
         return self.creation_user.profile.full_name
 
     def __str__(self):
-        return str(self.id) + ' - ' + self.title + ' ('+self.get_status_display+')'
+        return str(self.id) + ' - ' + self.subject + ' ('+self.get_status_display+')'
 
     def get_absolute_url(self):
         return reverse('ticket_detail', kwargs={'pk': self.pk})

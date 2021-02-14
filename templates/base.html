@@ -161,18 +161,19 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
   <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.2/dist/quasar.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/quasar@1.15.2/dist/icon-set/fontawesome-v5.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js" integrity="sha512-SVDh1zH5N9ChofSlNAK43lcNS7lWze6DTVx1JCXH1Tmno+0/1jMpdbR8YDgDUfcUrPp1xyE53G42GFrcM0CMVg==" crossorigin="anonymous"></script>
   <script>{% include "dalme_app/includes/vue-components/CreateIssueTicket.js" %}</script>
   {{ page_context | json_script:"context-data" }}
   <script>
     Quasar.iconSet.set(Quasar.iconSet.fontawesomeV5);
-    const dalme_nav = new Vue({
+    const dalme_base = new Vue({
       el: '#dalme-nav',
       delimiters: ['${', '}'],
       mounted() {},
       created() {
         window.addEventListener("resize", this.windowResized);
         document.addEventListener("fullscreenchange", function(event) {
-          dalme_nav.$data.fullScreen = document.fullscreenElement ? true : false;
+          dalme_base.$data.fullScreen = document.fullscreenElement ? true : false;
         });
         this.preferences = this.contextData.preferences;
         this.breadcrumb = this.contextData.breadcrumb;
@@ -191,6 +192,14 @@
         windowWidth: window.innerWidth,
         fullScreen: document.fullscreenElement == null ? false : true,
         query: "{{ form.0.query.value|default_if_none:'' }}",
+        date: Quasar.utils.date,
+        tagOptions: [
+          { label: 'bug', value: 'bug', color: 'red-3' },
+          { label: 'content', value: 'content', color: 'amber-3' },
+          { label: 'documentation', value: 'documentation', color: 'light-blue-3' },
+          { label: 'feature', value: 'feature', color: 'deep-purple-3' },
+          { label: 'question', value: 'question', color: 'light-green-3' }
+        ],
       },
       watch: {
 
@@ -253,6 +262,21 @@
         windowResized() {
           this.windowWidth = window.innerWidth;
         },
+        format_date(date_string, prefixes=null, suffixes=null) {
+          let date = null;
+          if (this.date.isValid(date_string)) {
+            if (this.date.getDateDiff(Date.now(), date_string, 'days') > 7) {
+              date = this.date.formatDate(date_string, 'D MMM YYYY');
+              if (prefixes) date = `${prefixes[0]}${date}`;
+              if (suffixes) date = `${date}${suffixes[0]}`;
+            } else {
+              date = timeago.format(date_string)
+              if (prefixes) date = `${prefixes[1]}${date}`;
+              if (suffixes) date = `${date}${suffixes[1]}`;
+            }
+          }
+          return date
+        }
       },
     })
   </script>

@@ -13,9 +13,6 @@
 #dalme-nav .dalme-nav-menus {
   background: #00000073 !important;
 }
-#dalme-nav button i {
-  font-size: 12px !important;
-}
 #dalme-nav .q-bar {
   padding: 0 20px;
 }
@@ -38,7 +35,9 @@
   position: absolute;
   padding: 0 12px;
 }
-
+.bg-top-grey-shadow {
+  background: #e0e0e05c!important;
+}
 
 /* TEMPORARY RULES - overrides for old DALME css */
 
@@ -123,6 +122,9 @@ a {
 .q-dialog__backdrop {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+}
+.q-btn-dropdown__arrow {
+  font-size: 12px !important;
 }
 /* STACKED ICONS */
 

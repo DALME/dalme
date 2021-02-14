@@ -25,6 +25,7 @@ class TicketDetail(DALMEDetailView):
 
 @method_decorator(login_required, name='dispatch')
 class TicketList(DALMEListView):
+    template_name = 'dalme_app/list_views/tickets.html'
     page_title = 'Issue Tickets'
     dt_config = 'tickets'
     breadcrumb = [('Project', ''), ('Issue Tickets', '/tickets')]

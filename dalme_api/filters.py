@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from dalme_app.models import Source, Set, Content_type
+from dalme_app.models import Source, Set, Content_type, Ticket
 
 
 class ContenTypeFilter(filters.FilterSet):
@@ -66,3 +66,12 @@ class SetFilter(filters.FilterSet):
                 return parent.filter(owner=self.request.user)
         else:
             return parent
+
+
+class TicketFilter(filters.FilterSet):
+    tags = filters.CharFilter(field_name='tags__tag', lookup_expr='icontains')
+
+    class Meta:
+        model = Ticket
+        fields = ['id', 'subject', 'description', 'status', 'tags', 'url', 'file',
+                  'creation_user', 'creation_timestamp']

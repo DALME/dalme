@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block content %}
+<div id="test-page" class="full-width">
+  <q-toolbar class="bg-top-grey-shadow q-px-md" v-cloak>
+    <div v-if="metadata">
+      <q-icon name="fas fa-exclamation-circle" color="grey-6" size="xs"></q-icon>
+      <span class="text-caption q-mr-sm text-grey-9 text-weight-bold">${ metadata.open } Open</span>
+      <q-icon name="fas fa-check-circle" color="grey-5" size="xs"></q-icon>
+      <span class="text-caption text-weight-medium q-mr-sm text-grey-8">${ metadata.closed } Closed</span>
+    </div>
+    <q-space></q-space>
+    <q-btn-dropdown
+      flat
+      dense
+      label="Filters"
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="text-capitalize q-mr-sm"
+      :class="{ 'text-light-blue-10' : hasFilters }"
+    >
+      <q-list separator class="text-grey-9">
+        <q-item dense>
+          <q-item-section class="text-weight-bold">Filter Issues</q-item-section>
+          <q-item-section avatar>
+            <q-btn v-if="hasFilters" flat dense size="xs" color="grey-6" icon="fas fa-times" @click="clear_quick_filters"></q-btn>
+          </q-item-section>
+        </q-item>
+        <template v-for="filter in filterList">
+          <q-item clickable v-close-popup dense @click="Vue.set(filters, filter.prop, filter.value)">
+            <q-item-section :class="{ 'text-light-blue-10': filters[filter.prop] == filter.value }">${ filter.label }</q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </q-btn-dropdown>
+
+    <q-btn-dropdown
+      flat
+      dense
+      label="Tag"
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="text-capitalize q-mr-sm"
+      :class="{ 'text-light-blue-10' : filters.tags }"
+    >
+      <q-list separator class="text-grey-9">
+        <q-item dense>
+          <q-item-section class="text-weight-bold">Filter by tag</q-item-section>
+          <q-item-section avatar>
+            <q-btn v-if="filters.tags" flat dense size="xs" color="grey-6" icon="fas fa-times" @click="filters.tags = null"></q-btn>
+          </q-item-section>
+        </q-item>
+        <template v-for="tag in dalme_base.$data.tagOptions">
+          <q-item clickable v-close-popup dense @click="Vue.set(filters, 'tags', tag.value)">
+            <q-radio
+              dense
+              size="sm"
+              v-model="filters.tags"
+              :val="tag.value"
+              class="q-mr-sm"
+            ></q-radio>
+            <q-chip
+              :color="tag.color"
+              :label="tag.label"
+              text-color="grey-10"
+              dense
+              size="13px"
+            ></q-chip>
+          </q-item>
+        </template>
+      </q-list>
+    </q-btn-dropdown>
+
+    <q-btn-dropdown
+      flat
+      dense
+      label="Author"
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="text-capitalize q-mr-sm"
+      v-if="metadata && metadata.authors"
+      :class="{ 'text-light-blue-10' : filters.creation_user }"
+    >
+      <q-list separator class="text-grey-9">
+        <q-item dense>
+          <q-item-section class="text-weight-bold">Filter by author</q-item-section>
+          <q-item-section avatar>
+            <q-btn v-if="filters.creation_user" flat dense size="xs" color="grey-6" icon="fas fa-times" @click="filters.creation_user = null"></q-btn>
+          </q-item-section>
+        </q-item>
+        <template v-for="author in metadata.authors">
+          <q-item clickable v-close-popup dense @click="Vue.set(filters, 'creation_user', author.creation_user__id)">
+            <q-item-section :class="{ 'text-light-blue-10': filters.creation_user == author.creation_user__id }">${ author.creation_user__profile__full_name }</q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </q-btn-dropdown>
+
+    <q-btn-dropdown
+      flat
+      dense
+      label="Sort"
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="text-capitalize q-mr-lg"
+    >
+      <q-list separator class="text-grey-9">
+        <q-item clickable v-close-popup dense>
+          <q-item-section>Filter issues</q-item-section>
+        </q-item>
+    </q-btn-dropdown>
+
+    <q-input
+      dense
+      standout="bg-light-blue-10 text-white"
+      debounce="300"
+      v-model="query"
+      placeholder="Search"
+      color="purple-12"
+    >
+      <template v-slot:append>
+        <q-icon name="fas fa-search"></q-icon>
+      </template>
+    </q-input>
+  </q-toolbar>
+  <q-separator></q-separator>
+  <div class="full-width row justify-center q-py-xl" v-if="!dataset">
+    <q-spinner-dots color="primary" size="4em"></q-spinner-dots>
+  </div>
+  <q-table
+    ref="data_table"
+    v-if="dataset"
+    :data="dataset"
+    row-key="id"
+    :columns="columns"
+    :filter="query"
+    :loading="loading"
+    no-data-label="No data available to show."
+    :pagination.sync="pagination"
+    @request="on_request"
+    table-style="width: 100%; max-height: calc(100vh - 173px);"
+    flat
+    square
+    hide-header
+  >
+    <template v-slot:body="props">
+      <q-tr class="cursor-pointer" @click="on_row_click(props.row.id)">
+        <q-td>
+          <div class="row items-center">
+            <q-icon
+              :name="props.row.status == 0 ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"
+              :color="props.row.status == 0 ? 'deep-orange-5' : 'light-green-8'"
+              size="xs"
+            ></q-icon>
+            <span class="text-body1 text-weight-bold text-no-wrap q-ml-sm text-grey-9">${ props.row.subject }</span>
+            <q-chip
+              v-for="tag in props.row.tags"
+              v-if="tag.tag != 0"
+              :color="tagColors[tag.tag]"
+              :label="tag.tag"
+              text-color="grey-10"
+              dense
+              size="13px"
+            ></q-chip>
+            <q-space></q-space>
+            <div v-if="props.row.comment_count != 0" class="row items-center">
+              <q-icon
+                name="far fa-comment-alt"
+                color="grey-8"
+                size="16px"
+                class="q-mr-xs"
+              ></q-icon>
+              <span class="text-caption text-weight-bold text-grey-8">${ props.row.comment_count }</span>
+            </div>
+          </div>
+          <div class="row items-center">
+            <span class="text-grey-8">#${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by ${ props.row.creation_user.full_name }</span>
+            <q-badge v-if="props.row.url" outline color="light-blue-5" class="q-ml-sm" label="url"></q-badge>
+            <q-badge v-if="props.row.file" outline color="brown-5" class="q-ml-sm" label="file"></q-badge>
+          </div>
+        </q-td>
+        </q-tr>
+    </template>
+  </q-table>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script>
+    Quasar.iconSet.set(Quasar.iconSet.fontawesomeV5)
+    const tickets = new Vue({
+      el: '#test-page',
+      delimiters: ['${', '}'],
+      mounted() {
+        this.on_request({
+          pagination: this.pagination
+        });
+      },
+      data: {
+        loading: false,
+        dataset: null,
+        metadata: null,
+        pagination: {
+          page: 1,
+          rowsPerPage: 25,
+          rowsNumber: null
+        },
+        tagColors: {
+          bug: 'red-3',
+          content: 'amber-3',
+          documentation: 'light-blue-3',
+          feature: 'deep-purple-3',
+          question: 'light-green-3'
+        },
+        columns: [{
+          name: 'ticket',
+          field: row => row
+        }],
+        query: null,
+        filters: {
+          creation_user: null,
+          tags: null
+        },
+        filterKeys: [],
+        filterList: [
+          { prop: 'status', value: 0, label: 'Open issues' },
+          { prop: 'status', value: 1, label: 'Closed issues' },
+          { prop: 'creation_user', value: dalme_base.$data.user.id, label: 'Your issues' },
+          { prop: 'comments__body__icontains', value: dalme_base.$data.user.username, label: 'Everything mentioning you' },
+        ],
+      },
+      computed: {
+        hasFilters() {
+          return Object.keys(this.filters).filter(el => this.filters[el] != null).length ? true : false;
+        },
+      },
+      watch: {
+        filters: {
+          deep: true,
+          handler() {
+            this.$refs.data_table.requestServerInteraction();
+          }
+        },
+      },
+      methods: {
+        on_request(props) {
+          this.loading = true;
+          const that = this;
+          const { page, rowsPerPage } = props.pagination;
+          const limit = rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
+          const offset = (page - 1) * rowsPerPage;
+          let url = `${dalme_base.$data.apiEndpoint}/tickets/?format=json&meta=1&limit=${limit}&offset=${offset}`;
+          if (Object.keys(this.filters).length > 2 || this.filters.creation_user || this.filters.tags) {
+            for (const field in this.filters) {
+              if (this.filters[field] !== null) {
+                url += `&${field}=${this.filters[field]}`;
+              }
+            }
+          }
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json()
+            }).then(data => {
+              this.dataset = data.results;
+              this.metadata = data.meta;
+              this.pagination.rowsNumber = data.count;
+              this.pagination.rowsPerPage = rowsPerPage;
+              this.pagination.page = page;
+              this.loading = false;
+            }).catch((error) => {
+              that.$q.notify({
+                message: `There was a problem communicating with the server. ${error}`,
+                icon: 'fas fa-times',
+                color: 'red-3',
+              });
+            });
+        },
+        on_row_click(id) {
+          window.location.href = `${dalme_base.$data.dbEndpoint}/tickets/${id}/`;
+        },
+        clear_quick_filters() {
+          for (const key in this.filters) {
+            if (key !== 'creation_user' && key !== 'tags') {
+              Vue.set(this.filters, key, null)
+            }
+          }
+        }
+      },
+    })
+  </script>
+{% endblock %}

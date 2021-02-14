@@ -9,14 +9,7 @@ Vue.component('CreateIssueTicket', {
       url: null,
       file: null,
       hasFile: false,
-      tagOptions: [
-        { label: 'bug', value: 'bug', color: 'red-3' },
-        { label: 'content', value: 'content', color: 'amber-3' },
-        { label: 'documentation', value: 'documentation', color: 'light-blue-3' },
-        { label: 'feature', value: 'feature', color: 'deep-purple-3' },
-        { label: 'question', value: 'question', color: 'light-green-3' }
-      ],
-      uploadUrl: `${dalme_nav.$data.apiEndpoint}/attachments/`,
+      uploadUrl: `${dalme_base.$data.apiEndpoint}/attachments/`,
       errors: {
         subject: null,
         description: null,
@@ -46,7 +39,7 @@ Vue.component('CreateIssueTicket', {
     },
     submit_ticket() {
       const that = this;
-      fetch(`${dalme_nav.$data.apiEndpoint}/tickets/`, {
+      fetch(`${dalme_base.$data.apiEndpoint}/tickets/`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
