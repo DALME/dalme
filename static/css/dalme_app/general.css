@@ -175,3 +175,8 @@ a:hover {
   padding-top:  10px;
   border-radius: 0 !important;
 }
+
+.fa-14 {
+  font-size: 12px !important;
+  padding-top: 2px;
+}

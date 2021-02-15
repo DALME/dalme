@@ -34,7 +34,6 @@
         </template>
       </q-list>
     </q-btn-dropdown>
-
     <q-btn-dropdown
       flat
       dense
@@ -71,7 +70,6 @@
         </template>
       </q-list>
     </q-btn-dropdown>
-
     <q-btn-dropdown
       flat
       dense
@@ -96,30 +94,38 @@
         </template>
       </q-list>
     </q-btn-dropdown>
-
     <q-btn-dropdown
       flat
       dense
       label="Sort"
       menu-anchor="bottom middle"
       menu-self="top middle"
-      class="text-capitalize q-mr-lg"
+      class="text-capitalize q-mr-sm"
+      :class="{ 'text-light-blue-10' : ordering }"
     >
       <q-list separator class="text-grey-9">
-        <q-item clickable v-close-popup dense>
-          <q-item-section>Filter issues</q-item-section>
+        <q-item dense>
+          <q-item-section class="text-weight-bold">Sort by</q-item-section>
+          <q-item-section avatar>
+            <q-btn v-if="ordering" flat dense size="xs" color="grey-6" icon="fas fa-times" @click="ordering = null"></q-btn>
+          </q-item-section>
         </q-item>
+        <template v-for="item in sortList">
+          <q-item clickable v-close-popup dense @click="ordering = item.value">
+            <q-item-section :class="{ 'text-light-blue-10': ordering == item.value }">${ item.label }</q-item-section>
+          </q-item>
+        </template>
+      </q-list>
     </q-btn-dropdown>
-
     <q-input
       dense
+      clearable
       standout="bg-light-blue-10 text-white"
-      debounce="300"
+      debounce="500"
       v-model="query"
       placeholder="Search"
-      color="purple-12"
     >
-      <template v-slot:append>
+      <template v-slot:prepend>
         <q-icon name="fas fa-search"></q-icon>
       </template>
     </q-input>
@@ -143,6 +149,7 @@
     flat
     square
     hide-header
+    hide-pagination
   >
     <template v-slot:body="props">
       <q-tr class="cursor-pointer" @click="on_row_click(props.row.id)">
@@ -187,6 +194,36 @@
         </q-td>
         </q-tr>
     </template>
+    <template v-slot:bottom>
+      <q-pagination
+        v-model="pagination.page"
+        color="grey-8"
+        :max="pagesNumber"
+        size="sm"
+        :direction-links="true"
+        :boundary-links="true"
+        icon-first="fas fa-step-backward fa-14"
+        icon-last="fas fa-step-forward fa-14"
+        icon-prev="fas fa-caret-left"
+        icon-next="fas fa-caret-right"
+      ></q-pagination>
+      <div class="row items-center">
+        <span class="q-mr-sm">
+          Showing records ${ pagination.page * pagination.rowsPerPage } to ${ (pagination.page * pagination.rowsPerPage) + pagination.rowsPerPage } of ${ pagination.rowsNumber }.
+        </span>
+        <span class="q-mr-sm">Show</span>
+        <q-btn flat dense size="sm" :label="pagination.rowsPerPage" icon-right="fas fa-caret-down" class="q-mx-sm">
+          <q-menu cover>
+            <q-list>
+              <q-item v-for="value in rowsPerPageList" clickable v-close-popup dense @click="pagination.rowsPerPage = value">
+                <q-item-section>${ value }</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+        <span>records per page</span>
+      </div>
+    </template>
   </q-table>
 </div>
 {% endblock %}
@@ -212,6 +249,7 @@
           rowsPerPage: 25,
           rowsNumber: null
         },
+        ordering: null,
         columns: [{
           name: 'ticket',
           field: row => row
@@ -221,26 +259,40 @@
           creation_user: null,
           tags: null
         },
-        filterKeys: [],
         filterList: [
           { prop: 'status', value: 0, label: 'Open issues' },
           { prop: 'status', value: 1, label: 'Closed issues' },
           { prop: 'creation_user', value: dalme_base.$data.user.id, label: 'Your issues' },
           { prop: 'comments__body__icontains', value: dalme_base.$data.user.username, label: 'Everything mentioning you' },
         ],
+        sortList: [
+          { label: 'Newest', value: '-creation_timestamp' },
+          { label: 'Oldest', value: 'creation_timestamp' },
+          { label: 'Most commented', value: '-no_comments' },
+          { label: 'Least commented', value: 'no_comments' },
+          { label: 'Recently updated', value: '-modification_timestamp' },
+          { label: 'Least recently updated', value: 'modification_timestamp' }
+        ],
+        rowsPerPageList: [5, 10, 15, 20, 25, 50, 100],
       },
       computed: {
         hasFilters() {
           return Object.keys(this.filters).filter(el => this.filters[el] != null).length ? true : false;
         },
+        pagesNumber () {
+          return Math.ceil(this.pagination.rowsNumber / this.pagination.rowsPerPage)
+        }
       },
       watch: {
         filters: {
           deep: true,
           handler() {
-            this.$refs.data_table.requestServerInteraction();
+            this.trigger_request();
           }
         },
+        'pagination.page': "trigger_request",
+        query: "trigger_request",
+        ordering: "trigger_request"
       },
       methods: {
         on_request(props) {
@@ -256,6 +308,12 @@
                 url += `&${field}=${this.filters[field]}`;
               }
             }
+          }
+          if (this.query) {
+            url += `&search=${this.query}`;
+          }
+          if (this.ordering) {
+            url += `&ordering=${this.ordering}`;
           }
           fetch(url)
             .then(response => {
@@ -280,6 +338,9 @@
         },
         on_row_click(id) {
           window.location.href = `${dalme_base.$data.dbEndpoint}/tickets/${id}/`;
+        },
+        trigger_request() {
+          this.$refs.data_table.requestServerInteraction();
         },
         get_tag_colour(tag) {
           return dalme_base.$data.tagOptions.find(o => o.value === tag).color;

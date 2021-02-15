@@ -16,7 +16,7 @@ class Tickets(DALMEModelViewSet):
     filterset_class = TicketFilter
     ordering = ['status', 'id']
     search_fields = ['id', 'subject', 'description', 'tags__tag', 'comments__body', 'creation_user__username', 'creation_user__profile__full_name']
-    ordering_fields = ['id', 'status', 'creation_user', 'creation_timestamp', 'no_comments']
+    ordering_fields = ['id', 'status', 'creation_user', 'creation_timestamp', 'no_comments', 'modification_timestamp']
     ordering_aggregates = {
         'no_comments': {
             'function': 'Count',
