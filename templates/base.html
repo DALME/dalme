@@ -262,11 +262,12 @@
         windowResized() {
           this.windowWidth = window.innerWidth;
         },
-        format_date(date_string, prefixes=null, suffixes=null) {
+        format_date(date_string, prefixes=null, suffixes=null, with_time=false) {
           let date = null;
+          const format = with_time ? 'D MMM YYYY @ H:mm' : 'D MMM YYYY';
           if (this.date.isValid(date_string)) {
             if (this.date.getDateDiff(Date.now(), date_string, 'days') > 7) {
-              date = this.date.formatDate(date_string, 'D MMM YYYY');
+              date = this.date.formatDate(date_string, format);
               if (prefixes) date = `${prefixes[0]}${date}`;
               if (suffixes) date = `${date}${suffixes[0]}`;
             } else {
@@ -276,6 +277,60 @@
             }
           }
           return date
+        },
+        api_fetch(endpoint, object, paras, callback) {
+          let url = object ? `${this.apiEndpoint}/${endpoint}/${object}/?format=json` : `${this.apiEndpoint}/${endpoint}/?format=json`;
+          if (paras) {
+            for (const [key, value] of Object.entries(paras)) {
+              url += `&${key}=${value}`;
+            }
+          }
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json()
+            }).then(data => {
+              callback(data);
+            }).catch((error) => {
+              this.$q.notify({
+                message: `There was a problem communicating with the server. ${error}`,
+                icon: 'fas fa-times',
+                color: 'red-3',
+              });
+            });
+        },
+        api_post(endpoint, target, data, method, callback) {
+          let url = target ? `${this.apiEndpoint}/${endpoint}/${target}/` : `${this.apiEndpoint}/${endpoint}/`;
+          fetch(url, {
+            method: method,
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': this.$q.cookies.get('csrftoken')
+            },
+            redirect: 'follow',
+            body: JSON.stringify(data)
+          }).then(response => {
+            if (response.status == 400) {
+              return response.json()
+            }
+            else if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json()
+          }).then(data => {
+            callback(data);
+          })
+          .catch((error) => {
+            this.$q.notify({
+              message: `There was a problem communicating with the server. ${error}`,
+              icon: 'fas fa-times',
+              color: 'red-3',
+            });
+          });
         }
       },
     })

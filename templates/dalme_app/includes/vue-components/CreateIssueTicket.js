@@ -37,56 +37,31 @@ Vue.component('CreateIssueTicket', {
         this.submit_ticket();
       }
     },
-    submit_ticket() {
-      const that = this;
-      fetch(`${dalme_base.$data.apiEndpoint}/tickets/`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': that.$q.cookies.get('csrftoken')
-        },
-        redirect: 'follow',
-        body: JSON.stringify({
-          subject: that.subject,
-          description: that.description,
-          tags: that.tags,
-          url: that.url,
-          file: that.file
-        })
-      }).then(response => {
-        if (response.status == 400) {
-          return response.json()
-        }
-        else if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json()
-      }).then(data => {
-        if (data.fieldErrors) {
-          for (let i = 0, len = data.fieldErrors.length; i < len; ++i) {
-            if (data.fieldErrors[i].name in that.errors) {
-              that.errors[data.fieldErrors[i].name] = data.fieldErrors[i].status;
-            }
+    process_response(data) {
+      if (data.fieldErrors) {
+        for (let i = 0, len = data.fieldErrors.length; i < len; ++i) {
+          if (data.fieldErrors[i].name in this.errors) {
+            this.errors[data.fieldErrors[i].name] = data.fieldErrors[i].status;
           }
-        } else {
-          that.$q.notify({
-            message: 'The ticket was created successfully',
-            icon: 'fas fa-check',
-            color: 'light-green-5',
-          });
-          that.hide()
         }
-      })
-      .catch((error) => {
-        that.$q.notify({
-          message: `There was a problem communicating with the server. ${error}`,
-          icon: 'fas fa-times',
-          color: 'red-3',
+      } else {
+        this.$q.notify({
+          message: 'The ticket was created successfully',
+          icon: 'fas fa-check',
+          color: 'light-green-5',
         });
-        that.hide()
-      });
+        this.hide()
+      }
+    },
+    submit_ticket() {
+      const form_data = {
+        subject: this.subject,
+        description: this.description,
+        tags: this.tags,
+        url: this.url,
+        file: this.file
+      }
+      dalme_base.api_post('tickets', null, form_data, 'POST', this.process_response);
     },
     onCancelClick() {
       this.hide()

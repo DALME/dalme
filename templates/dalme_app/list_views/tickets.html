@@ -4,12 +4,43 @@
 {% block content %}
 <div id="tickets-list" class="full-width">
   <q-toolbar class="bg-top-grey-shadow q-px-md" v-cloak>
-    <div v-if="metadata">
-      <q-icon name="fas fa-exclamation-circle" color="grey-6" size="xs"></q-icon>
-      <span class="text-caption q-mr-sm text-grey-9 text-weight-bold">${ metadata.open } Open</span>
-      <q-icon name="fas fa-check-circle" color="grey-5" size="xs"></q-icon>
-      <span class="text-caption text-weight-medium q-mr-sm text-grey-8">${ metadata.closed } Closed</span>
-    </div>
+    <q-btn-dropdown
+      flat
+      dense
+      :label="'Show ' + pagination.rowsPerPage"
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="text-capitalize"
+    >
+      <q-list separator class="text-grey-9">
+        <template v-for="value in rowsPerPageList">
+          <q-item clickable v-close-popup dense @click="pagination.rowsPerPage = value">
+            <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': pagination.rowsPerPage == value }">${ value }</q-item-section>
+          </q-item>
+        </template>
+      </q-list>
+    </q-btn-dropdown>
+    <q-separator vertical inset spaced></q-separator>
+    <template v-if="metadata">
+      <q-chip
+        color="transparent"
+        text-color="grey-6"
+        icon="fas fa-exclamation-circle"
+        size="12px"
+        class="q-mr-none"
+      >
+        <span class="text-caption text-grey-9 text-weight-bold">${ metadata.open } Open</span>
+      </q-chip>
+      <q-chip
+        color="transparent"
+        text-color="grey-5"
+        icon="fas fa-check-circle"
+        size="12px"
+        class="q-ml-none"
+      >
+        <span class="text-caption text-weight-medium text-grey-8">${ metadata.closed } Closed</span>
+      </q-chip>
+    </template>
     <q-space></q-space>
     <q-btn-dropdown
       flat
@@ -29,7 +60,7 @@
         </q-item>
         <template v-for="filter in filterList">
           <q-item clickable v-close-popup dense @click="Vue.set(filters, filter.prop, filter.value)">
-            <q-item-section :class="{ 'text-light-blue-10': filters[filter.prop] == filter.value }">${ filter.label }</q-item-section>
+            <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': filters[filter.prop] == filter.value }">${ filter.label }</q-item-section>
           </q-item>
         </template>
       </q-list>
@@ -89,7 +120,7 @@
         </q-item>
         <template v-for="author in metadata.authors">
           <q-item clickable v-close-popup dense @click="Vue.set(filters, 'creation_user', author.creation_user__id)">
-            <q-item-section :class="{ 'text-light-blue-10': filters.creation_user == author.creation_user__id }">${ author.creation_user__profile__full_name }</q-item-section>
+            <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': filters.creation_user == author.creation_user__id }">${ author.creation_user__profile__full_name }</q-item-section>
           </q-item>
         </template>
       </q-list>
@@ -100,7 +131,7 @@
       label="Sort"
       menu-anchor="bottom middle"
       menu-self="top middle"
-      class="text-capitalize q-mr-sm"
+      class="text-capitalize"
       :class="{ 'text-light-blue-10' : ordering }"
     >
       <q-list separator class="text-grey-9">
@@ -112,11 +143,12 @@
         </q-item>
         <template v-for="item in sortList">
           <q-item clickable v-close-popup dense @click="ordering = item.value">
-            <q-item-section :class="{ 'text-light-blue-10': ordering == item.value }">${ item.label }</q-item-section>
+            <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': ordering == item.value }">${ item.label }</q-item-section>
           </q-item>
         </template>
       </q-list>
     </q-btn-dropdown>
+    <q-separator vertical inset spaced></q-separator>
     <q-input
       dense
       clearable
@@ -124,6 +156,7 @@
       debounce="500"
       v-model="query"
       placeholder="Search"
+      class="q-ml-xs"
     >
       <template v-slot:prepend>
         <q-icon name="fas fa-search"></q-icon>
@@ -158,7 +191,7 @@
             <q-icon
               :name="props.row.status == 0 ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"
               :color="props.row.status == 0 ? 'green-8': 'red-8'"
-              size="xs"
+              size="16px"
             ></q-icon>
             <span class="text-body1 text-weight-bold text-no-wrap q-ml-sm text-grey-9">${ props.row.subject }</span>
             <q-chip
@@ -181,7 +214,7 @@
               <span class="text-caption text-weight-bold text-grey-8">${ props.row.comment_count }</span>
             </div>
           </div>
-          <div class="row items-center">
+          <div class="row items-center q-ml-lg">
             <span v-if="props.row.status == 0" class="text-grey-8">
               #${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by ${ props.row.creation_user.full_name }
             </span>
@@ -195,34 +228,19 @@
         </q-tr>
     </template>
     <template v-slot:bottom>
+      <q-space></q-space>
       <q-pagination
         v-model="pagination.page"
-        color="grey-8"
+        color="light-blue-10"
         :max="pagesNumber"
-        size="sm"
+        max-pages="2"
+        size="12px"
         :direction-links="true"
-        :boundary-links="true"
-        icon-first="fas fa-step-backward fa-14"
-        icon-last="fas fa-step-forward fa-14"
+        :boundary-numbers="true"
         icon-prev="fas fa-caret-left"
         icon-next="fas fa-caret-right"
       ></q-pagination>
-      <div class="row items-center">
-        <span class="q-mr-sm">
-          Showing records ${ pagination.page * pagination.rowsPerPage } to ${ (pagination.page * pagination.rowsPerPage) + pagination.rowsPerPage } of ${ pagination.rowsNumber }.
-        </span>
-        <span class="q-mr-sm">Show</span>
-        <q-btn flat dense size="sm" :label="pagination.rowsPerPage" icon-right="fas fa-caret-down" class="q-mx-sm">
-          <q-menu cover>
-            <q-list>
-              <q-item v-for="value in rowsPerPageList" clickable v-close-popup dense @click="pagination.rowsPerPage = value">
-                <q-item-section>${ value }</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-        <span>records per page</span>
-      </div>
+      <q-space></q-space>
     </template>
   </q-table>
 </div>
@@ -263,7 +281,7 @@
           { prop: 'status', value: 0, label: 'Open issues' },
           { prop: 'status', value: 1, label: 'Closed issues' },
           { prop: 'creation_user', value: dalme_base.$data.user.id, label: 'Your issues' },
-          { prop: 'comments__body__icontains', value: dalme_base.$data.user.username, label: 'Everything mentioning you' },
+          { prop: 'assigned_to', value: dalme_base.$data.user.id, label: 'Assigned to me' },
         ],
         sortList: [
           { label: 'Newest', value: '-creation_timestamp' },
@@ -277,7 +295,9 @@
       },
       computed: {
         hasFilters() {
-          return Object.keys(this.filters).filter(el => this.filters[el] != null).length ? true : false;
+          return Object.keys(this.filters).filter(
+                    el => !['creation_user', 'tags'].includes(el) && this.filters[el] != null
+                  ).length ? true : false;
         },
         pagesNumber () {
           return Math.ceil(this.pagination.rowsNumber / this.pagination.rowsPerPage)
@@ -291,50 +311,37 @@
           }
         },
         'pagination.page': "trigger_request",
+        'pagination.rowsPerPage': "trigger_request",
         query: "trigger_request",
         ordering: "trigger_request"
       },
       methods: {
         on_request(props) {
           this.loading = true;
-          const that = this;
           const { page, rowsPerPage } = props.pagination;
-          const limit = rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage;
-          const offset = (page - 1) * rowsPerPage;
-          let url = `${dalme_base.$data.apiEndpoint}/tickets/?format=json&meta=1&limit=${limit}&offset=${offset}`;
+          const paras = {
+            meta: 1,
+            limit: rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage,
+            offset: (page - 1) * rowsPerPage,
+          }
           if (Object.keys(this.filters).length > 2 || this.filters.creation_user || this.filters.tags) {
             for (const field in this.filters) {
               if (this.filters[field] !== null) {
-                url += `&${field}=${this.filters[field]}`;
+                paras[field] = this.filters[field];
               }
             }
           }
-          if (this.query) {
-            url += `&search=${this.query}`;
-          }
-          if (this.ordering) {
-            url += `&ordering=${this.ordering}`;
-          }
-          fetch(url)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json()
-            }).then(data => {
-              this.dataset = data.results;
-              this.metadata = data.meta;
-              this.pagination.rowsNumber = data.count;
-              this.pagination.rowsPerPage = rowsPerPage;
-              this.pagination.page = page;
-              this.loading = false;
-            }).catch((error) => {
-              that.$q.notify({
-                message: `There was a problem communicating with the server. ${error}`,
-                icon: 'fas fa-times',
-                color: 'red-3',
-              });
-            });
+          if (this.query) paras['search'] = this.query;
+          if (this.ordering) paras['ordering'] = this.ordering;
+          this.pagination.rowsPerPage = rowsPerPage;
+          this.pagination.page = page;
+          dalme_base.api_fetch('tickets', null, paras, this.set_data);
+        },
+        set_data(data) {
+          this.dataset = data.results;
+          this.metadata = data.meta;
+          this.pagination.rowsNumber = data.count;
+          this.loading = false;
         },
         on_row_click(id) {
           window.location.href = `${dalme_base.$data.dbEndpoint}/tickets/${id}/`;
