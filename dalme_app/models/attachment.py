@@ -19,6 +19,10 @@ class Attachment(dalmeUuidOwned):
         name, extension = os.path.splitext(self.file.name)
         return extension
 
+    @property
+    def source(self):
+        return f'https://dalme-app-media.s3.amazonaws.com/media/{str(self.file)}'
+
     def preview(self):
         icon_type_dict = {
             'application/msword': 'fa-file-word',

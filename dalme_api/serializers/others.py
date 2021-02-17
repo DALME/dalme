@@ -10,7 +10,7 @@ from ._common import DynamicSerializer
 class AttachmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Attachment
-        fields = '__all__'
+        fields = ('filename', 'source', 'type')
 
 
 class AttributeTypeSerializer(serializers.ModelSerializer):
