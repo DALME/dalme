@@ -33,3 +33,6 @@ class Tag(dalmeUuid):
 
     def __str__(self):
         return self.tag
+
+    class Meta:
+        unique_together = ("tag", "object_id")
