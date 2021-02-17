@@ -20,16 +20,16 @@ class dalmeBasic(models.Model):
     modification_user = models.ForeignKey(User, on_delete=models.SET_NULL, default=get_current_user, related_name="%(app_label)s_%(class)s_modification", null=True)
     modification_timestamp = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    class Meta:
+        abstract = True
+
     def class_name(self):
         return self.__class__.__name__
 
-    def save(self, *args, **kwargs):
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self._state.adding is True:
             self.owner = get_current_user()
-        super().save(*args, **kwargs)
-
-    class Meta:
-        abstract = True
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class dalmeUuid(models.Model):
@@ -40,11 +40,11 @@ class dalmeUuid(models.Model):
     modification_user = models.ForeignKey(User, on_delete=models.SET_NULL, default=get_current_user, related_name="%(app_label)s_%(class)s_modification", null=True)
     modification_timestamp = models.DateTimeField(auto_now=True, null=True, blank=True)
 
-    def class_name(self):
-        return self.__class__.__name__
-
     class Meta:
         abstract = True
+
+    def class_name(self):
+        return self.__class__.__name__
 
 
 class dalmeIntid(models.Model):
@@ -55,11 +55,11 @@ class dalmeIntid(models.Model):
     modification_user = models.ForeignKey(User, on_delete=models.SET_NULL, default=get_current_user, related_name="%(app_label)s_%(class)s_modification", null=True)
     modification_timestamp = models.DateTimeField(auto_now=True, null=True, blank=True)
 
-    def class_name(self):
-        return self.__class__.__name__
-
     class Meta:
         abstract = True
+
+    def class_name(self):
+        return self.__class__.__name__
 
 
 class dalmeUuidOwned(dalmeUuid):
@@ -69,6 +69,11 @@ class dalmeUuidOwned(dalmeUuid):
     class Meta:
         abstract = True
 
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self._state.adding is True:
+            self.owner = get_current_user()
+        super().save(force_insert, force_update, using, update_fields)
+
 
 class dalmeIntidOwned(dalmeIntid):
     """ Same as dalmeIntid but with the addition of an owner field """
@@ -76,3 +81,8 @@ class dalmeIntidOwned(dalmeIntid):
 
     class Meta:
         abstract = True
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self._state.adding is True:
+            self.owner = get_current_user()
+        super().save(force_insert, force_update, using, update_fields)
