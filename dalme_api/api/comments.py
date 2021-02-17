@@ -28,7 +28,7 @@ class Comments(viewsets.ModelViewSet):
         result = {}
         data = request.data
         try:
-            content_object = eval(data['model']+'.objects.get(pk="'+data['object']+'")')
+            content_object = eval(data['model']+'.objects.get(pk="'+str(data['object'])+'")')
             new_comment = content_object.comments.create(body=data['body'])
             serializer = self.get_serializer(new_comment)
             result = serializer.data
