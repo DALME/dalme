@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from dalme_app.models import Source, Set, Content_type, Ticket
+from django.contrib.auth.models import User
 
 
 class ContenTypeFilter(filters.FilterSet):
@@ -74,4 +75,23 @@ class TicketFilter(filters.FilterSet):
     class Meta:
         model = Ticket
         fields = ['id', 'subject', 'description', 'status', 'tags', 'url', 'file',
-                  'creation_user', 'creation_timestamp']
+                  'creation_user', 'creation_timestamp', 'assigned_to']
+
+
+class UserFilter(filters.FilterSet):
+    groups = filters.CharFilter(label='groups', method='check_groups')
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'profile__full_name', 'groups']
+
+    def check_groups(self, queryset, name, value):
+        if ',' in value:
+            request_groups = value.split(',')
+        else:
+            request_groups = [value]
+
+        qs = queryset.none()
+        for group in request_groups:
+            qs = qs | queryset.filter(groups__name=group)
+        return qs.distinct()

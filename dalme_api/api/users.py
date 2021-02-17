@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from dalme_api.serializers import UserSerializer
 from dalme_api.access_policies import UserAccessPolicy
 from ._common import DALMEBaseViewSet
+from dalme_api.filters import UserFilter
 
 
 class Users(DALMEBaseViewSet):
@@ -14,7 +15,7 @@ class Users(DALMEBaseViewSet):
     permission_classes = (UserAccessPolicy,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    filterset_fields = ['id', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'is_active', 'profile__full_name', 'groups']
+    filterset_class = UserFilter
     search_fields = ['username', 'email', 'profile__full_name', 'first_name', 'last_name']
     ordering_fields = ['id', 'username', 'email', 'profile__full_name', 'last_login', 'date_joined', 'is_staff', 'is_active', 'is_superuser', 'first_name']
     ordering = ['id']
