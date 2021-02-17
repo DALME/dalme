@@ -29,7 +29,8 @@ class DALMEContextMixin(ContextMixin):
                     'id': user.id,
                     'username': user.username,
                     'full_name': user.profile.full_name,
-                    'avatar': user.profile.profile_image
+                    'avatar': user.profile.profile_image,
+                    'groups': [g.name for g in user.groups.all()]
                 },
                 'preferences': self.get_preferences(),
                 'main_menu': main_menu,
