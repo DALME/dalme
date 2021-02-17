@@ -132,6 +132,24 @@ a:hover {
 .q-chip {
   padding: 0.5em 0.7em;
 }
+.q-editor__toolbar .q-icon {
+  font-size: 13px;
+}
+.q-editor__toolbar {
+  min-height: 37px;
+  align-items: center;
+  padding-right: 4px;
+}
+.q-editor__toolbar .q-editor__toolbar-group:first-of-type {
+  margin-left: auto;
+
+}
+.q-editor__toolbar a:hover {
+  text-decoration: none;
+}
+.q-editor .q-btn {
+  margin: 4px 6px;
+}
 /* STACKED ICONS */
 
 .fa-stack-container {
@@ -179,4 +197,8 @@ a:hover {
 .fa-14 {
   font-size: 12px !important;
   padding-top: 2px;
+}
+
+.bg-transparent {
+  background: transparent !important;
 }
