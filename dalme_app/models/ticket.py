@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from dalme_app.models._templates import dalmeIntid
 import django.db.models.options as options
+from django.contrib.auth.models import User
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ('in_db',)
 
@@ -22,6 +23,7 @@ class Ticket(dalmeIntid):
     url = models.CharField(max_length=255, null=True, default=None)
     file = models.ForeignKey('Attachment', blank=True, null=True, on_delete=models.SET_NULL)
     comments = GenericRelation('Comment')
+    assigned_to = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name="ticket_assigned_to")
 
     @property
     def creation_name(self):
