@@ -1,5 +1,5 @@
 Vue.component('CreateIssueTicket', {
-  template: `{% include "dalme_app/includes/vue-components/CreateIssueTicket.html" %}`,
+  template: `{% include "dalme_app/includes/components/CreateIssueTicket/CreateIssueTicket.html" %}`,
   data: function () {
     return {
       issueTicket: false,
@@ -9,7 +9,6 @@ Vue.component('CreateIssueTicket', {
       url: null,
       file: null,
       hasFile: false,
-      uploadUrl: `${dalme_base.$data.apiEndpoint}/attachments/`,
       errors: {
         subject: null,
         description: null,
@@ -66,9 +65,6 @@ Vue.component('CreateIssueTicket', {
     onCancelClick() {
       this.hide()
     },
-    uploadHeaders() {
-      return [{name: 'X-CSRFToken', value: this.$q.cookies.get('csrftoken')}]
-    },
     upload_completed(info) {
       let response = JSON.parse(info.xhr.response);
       this.file = response.id;
@@ -76,7 +72,7 @@ Vue.component('CreateIssueTicket', {
     },
     upload_failed(info) {
       let response = JSON.parse(info.xhr.response);
-      let message = '<div class="text-body2">There was a problem uploading the attachment.';
+      let message = '<div class="text-body2">There was a problem uploading the file.';
       if ('error' in response) {
         message += ` The server responded:</div><div class="q-my-sm text-weight-bold text-red-9">${response.error}</div>`;
       } else {

@@ -7,7 +7,7 @@
 >
   <q-card class="w-50 dialogue-top-blue">
     <q-card-section class="q-py-none row">
-      <div class="text-h7 text-light-blue-10">Create Issue Ticket</div>
+      <div class="text-h5 text-light-blue-10">Create Issue Ticket</div>
     </q-card-section>
     <q-form class="q-gutter-md q-pa-md">
       <q-input
@@ -96,9 +96,9 @@
       ></q-input>
       <q-uploader
         ref="file_uploader"
-        :url="uploadUrl"
+        :url="dalme_base.$data.uploadUrl"
         method="POST"
-        :headers="uploadHeaders"
+        :headers="dalme_base.uploadHeaders"
         field-name="file"
         with-credentials
         style="width: auto;"
@@ -106,7 +106,7 @@
         text-color="grey-7"
         flat
         hide-upload-btn
-        label="Attachment"
+        label="Upload File"
         class="filled-in_form"
         @added="hasFile = true"
         @removed="hasFile = false"
