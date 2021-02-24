@@ -1,4 +1,4 @@
-from dalme_app.models import Ticket, Tag
+from dalme_app.models import Ticket, Tag, Attachment
 from rest_framework import serializers
 from dalme_api.serializers.others import TagSerializer, AttachmentSerializer
 from dalme_api.serializers.users import UserSerializer
@@ -6,16 +6,18 @@ from dalme_api.serializers.comments import CommentSerializer
 from django.contrib.auth.models import User
 from rest_framework.utils import model_meta
 from django_currentuser.middleware import get_current_user
+from django.utils import timezone
 
 
 class TicketSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, required=False)
     creation_user = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'], required=False)
     modification_user = UserSerializer(fields=['full_name', 'username', 'id'], required=False)
+    closing_user = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'], required=False)
 
     class Meta:
         model = Ticket
-        fields = ('id', 'subject', 'description', 'status', 'tags', 'url', 'file',
+        fields = ('id', 'subject', 'description', 'status', 'tags', 'url', 'file', 'closing_user', 'closing_date',
                   'creation_user', 'creation_timestamp', 'modification_user', 'modification_timestamp')
         extra_kwargs = {
             'tags': {'required': False}
@@ -48,10 +50,11 @@ class TicketDetailSerializer(serializers.ModelSerializer):
     modification_user = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'], required=False)
     comments = CommentSerializer(many=True, required=False)
     assigned_to = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'], required=False)
+    closing_user = UserSerializer(fields=['full_name', 'username', 'id', 'avatar'], required=False)
 
     class Meta:
         model = Ticket
-        fields = ('id', 'subject', 'description', 'status', 'tags', 'url', 'file', 'comments',
+        fields = ('id', 'subject', 'description', 'status', 'tags', 'url', 'file', 'comments', 'closing_user', 'closing_date',
                   'creation_user', 'creation_timestamp', 'modification_user', 'modification_timestamp', 'assigned_to')
         extra_kwargs = {
             'tags': {'required': False}
@@ -67,6 +70,8 @@ class TicketDetailSerializer(serializers.ModelSerializer):
             self.context['tags'] = data.pop('tags')
         if data.get('assigned_to') is not None:
             self.context['assigned_to'] = data.pop('assigned_to')
+        if data.get('file') is not None:
+            self.context['file'] = data.pop('file')
         return super().to_internal_value(data)
 
     def update(self, instance, validated_data):
@@ -74,12 +79,22 @@ class TicketDetailSerializer(serializers.ModelSerializer):
         info = model_meta.get_field_info(instance)
         assigned_to = self.context.get('assigned_to')
         tags = self.context.get('tags')
+        file = self.context.get('file')
         fields = ['modification_user', 'modification_timestamp']
         m2m_fields = []
         validated_data['modification_user'] = get_current_user()
 
+        if validated_data.get('status') is not None and validated_data['status'] == 1:
+            validated_data.update({
+                'closing_user': get_current_user(),
+                'closing_date': timezone.now(),
+            })
+
         if assigned_to:
             validated_data['assigned_to'] = User.objects.get(id=assigned_to)
+
+        if file:
+            validated_data['file'] = Attachment.objects.get(id=file)
 
         for attr, value in validated_data.items():
             if attr in info.relations and info.relations[attr].to_many:

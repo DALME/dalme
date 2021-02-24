@@ -23,11 +23,9 @@ class Ticket(dalmeIntid):
     url = models.CharField(max_length=255, null=True, default=None)
     file = models.ForeignKey('Attachment', blank=True, null=True, on_delete=models.SET_NULL)
     comments = GenericRelation('Comment')
-    assigned_to = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name="ticket_assigned_to")
-
-    @property
-    def creation_name(self):
-        return self.creation_user.profile.full_name
+    assigned_to = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, related_name="ticket_assigned_to")
+    closing_user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    closing_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return str(self.id) + ' - ' + self.subject + ' ('+self.get_status_display+')'
