@@ -1,0 +1,160 @@
+<q-item class="q-py-sm q-px-lg">
+  <q-item-section top avatar>
+    <q-avatar v-if="dalme_base.$data.user.avatar" size="40px">
+      <img :src="dalme_base.$data.user.avatar">
+    </q-avatar>
+    <q-icon v-else name="fas fa-user" size="40px">
+    </q-icon>
+  </q-item-section>
+  <q-item-section>
+    <q-card flat bordered class="box-left-arrow">
+      <q-card-section class="bg-grey-2 q-py-sm q-px-sm row">
+        <q-space></q-space>
+        <div class="row">
+          <template v-for="(set, index) in toolbar">
+            <q-separator vertical class="q-mr-sm" v-if="index !== 0"></q-separator>
+            <template v-for="cmd in set">
+              <q-btn
+                v-if="cmd.type == 'button'"
+                color="grey-7"
+                flat
+                :icon="cmd.icon"
+                size="xs"
+                padding="5px 5px"
+                class="q-mr-sm"
+                @click="cmd.handler(cmd.payload)"
+              >
+                <q-tooltip><span v-text="cmd.hint"></span></q-tooltip>
+              </q-btn>
+              <q-btn
+                v-else-if="cmd.type == 'code_select'"
+                color="grey-7"
+                flat
+                :icon="cmd.icon"
+                size="xs"
+                padding="5px 5px"
+                class="q-mr-sm"
+              >
+                <q-tooltip><span v-text="cmd.hint"></span></q-tooltip>
+                <q-menu cover @hide="textareaEl.focus()">
+                  <q-list dense>
+                    <q-item dense v-for="option in codeOptions" clickable v-close-popup @click="insert_enclosure(['\`\`\`' + option.value + '\\n', '\\n\`\`\`'])">
+                      <q-item-section><span v-text="option.label"></span></q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+              <q-btn
+                v-else
+                color="grey-7"
+                flat
+                :icon="cmd.icon"
+                size="xs"
+                padding="5px 5px"
+                class="q-mr-sm"
+                @click="get_list(cmd.type)"
+              >
+                <q-tooltip><span v-text="cmd.hint"></span></q-tooltip>
+                <q-menu
+                  max-height="100px"
+                  :target="insertMenuTarget"
+                  v-model="$data[cmd.model]"
+                  anchor="top left"
+                  self="top left"
+                  :offset="insertMenuOffset"
+                  @hide="insertMenuTarget = false"
+                >
+                  <q-list>
+                    <template v-for="entry in $data[cmd.list]">
+                      <q-item dense clickable v-close-popup @click="insert_text(entry[cmd.key])">
+                        <q-item-section v-if="cmd.type == 'user'">
+                          <div class="row items-center">
+                            <span class="text-weight-medium q-mr-sm" v-text="entry.username"></span>
+                            <span class="text-caption text-grey-6" v-text="entry.full_name"></span>
+                          </div>
+                        </q-item-section>
+                        <q-item-section v-else>
+                          <div class="row items-center">
+                            <q-icon
+                              :name="entry.status == 0 ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"
+                              :color="entry.status == 0 ? 'green-8' : 'red-8'"
+                              class="q-mr-sm"
+                            ></q-icon>
+                            <span class="text-grey-6 q-mr-sm" v-text="'#'+entry.id"></span>
+                            <span class="text-grey-8 text-weight-bold q-mr-sm" v-text="entry.subject"></span>
+                          </div>
+                        </q-item-section>
+                      </q-item>
+                      <q-separator></q-separator>
+                    <template>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </template>
+          </template>
+        </div>
+      </q-card-section>
+      <q-separator></q-separator>
+      <q-tabs
+        v-model="tab"
+        dense
+        shrink
+        class="text-grey comment-editor-tabs"
+        active-color="light-blue-10"
+        active-bg-color="white"
+        indicator-color="transparent"
+        align="left"
+        narrow-indicator
+        no-caps
+        content-class="q-px-sm"
+        style="max-width: 180px;"
+      >
+        <q-tab name="write" label="Write"></q-tab>
+        <q-tab name="preview" label="Preview"></q-tab>
+      </q-tabs>
+      <q-tab-panels keep-alive v-model="tab" class="text-body2 comment-panels">
+          <q-tab-panel name="write" class="q-pa-sm">
+            <q-input
+              ref="comment_input"
+              v-model="commentBody"
+              outlined
+              dense
+              bg-color="grey-1"
+              type="textarea"
+              placeholder="Leave a comment..."
+            ></q-input>
+            <div class="bg-grey-1 comment-editor-footer q-px-sm q-py-xs row items-center">
+              <span class="text-caption text-grey-6">Please review the <a href="https://kb.dalme.org">guidelines for commenting</a></span>
+              <q-space></q-space>
+              <a href="https://docs.requarks.io/en/editors/markdown" target="_blank" class="no-undeline">
+                <q-icon name="fab fa-markdown">
+                  <q-tooltip>Styling with Markdown is supported</q-tooltip>
+                </q-icon>
+              </a>
+            </div>
+          </q-tab-panel>
+          <q-tab-panel name="preview">
+            <q-markdown
+              :src="commentBody"
+              :extend="dalme_base.extend_markdown"
+              style="min-height: 144px;"
+              task-lists-enable
+            >
+            </q-markdown>
+            <q-separator></q-separator>
+          </q-tab-panel>
+      </q-tab-panels>
+      <q-card-actions align="right" class="q-px-sm q-pt-xs comment-editor-actions">
+        <q-btn
+          dense
+          unelevated
+          no-caps
+          color="light-green-9"
+          :disable="!commentBody"
+          @click="save_comment"
+          label="Comment"
+        ></q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-item-section>
+</q-item>
