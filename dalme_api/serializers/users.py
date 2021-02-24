@@ -61,6 +61,8 @@ class UserSerializer(DynamicSerializer):
 
     def create(self, validated_data):
         profile_data = self.context.get('profile')
+        if 'username' in validated_data:
+            validated_data['username'] = validated_data['username'].lower()
 
         user = User.objects.create_user(**validated_data)
 
