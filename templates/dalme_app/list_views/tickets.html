@@ -3,7 +3,7 @@
 
 {% block content %}
 <div id="tickets-list" class="full-width">
-  <q-toolbar class="bg-top-grey-shadow q-px-md" v-cloak>
+  <q-toolbar class="bg-grey-2 q-px-md" v-cloak>
     <q-btn-dropdown
       flat
       dense
@@ -193,7 +193,7 @@
               :color="props.row.status == 0 ? 'green-8': 'red-8'"
               size="16px"
             ></q-icon>
-            <span class="text-body1 text-weight-bold text-no-wrap q-ml-sm text-grey-9">${ props.row.subject }</span>
+            <span class="text-h5 text-weight-bold text-no-wrap q-mx-sm">${ props.row.subject }</span>
             <q-chip
               v-for="tag in props.row.tags"
               v-if="tag.tag != 0"
@@ -201,7 +201,7 @@
               :label="tag.tag"
               text-color="grey-10"
               dense
-              size="13px"
+              size="11px"
             ></q-chip>
             <q-space></q-space>
             <div v-if="props.row.comment_count != 0" class="row items-center">
@@ -215,11 +215,11 @@
             </div>
           </div>
           <div class="row items-center q-ml-lg">
-            <span v-if="props.row.status == 0" class="text-grey-8">
+            <span v-if="props.row.status == 0" class="text-grey-9">
               #${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by ${ props.row.creation_user.full_name }
             </span>
-            <span v-else class="text-grey-8">
-              #${ props.row.id } by ${ props.row.creation_user.full_name } was closed ${ dalme_base.format_date(props.row.modification_timestamp, ['on ', '']) } by ${ props.row.modification_user.full_name }
+            <span v-else class="text-grey-9">
+              #${ props.row.id } by ${ props.row.creation_user.full_name } was closed ${ dalme_base.format_date(props.row.closing_date, ['on ', '']) } by ${ props.row.closing_user.full_name }
             </span>
             <q-badge v-if="props.row.url" outline color="light-blue-5" class="q-ml-sm" label="url"></q-badge>
             <q-badge v-if="props.row.file" outline color="brown-5" class="q-ml-sm" label="file"></q-badge>
