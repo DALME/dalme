@@ -10,7 +10,6 @@ from ._common import DALMEListView, DALMEDetailView
 class TicketDetail(DALMEDetailView):
     model = Ticket
     template_name = 'dalme_app/detail_views/ticket.html'
-    breadcrumb = [('Project', ''), ('Issue Tickets', '/tickets')]
 
     def get_page_title(self):
         return 'Ticket #{}'.format(str(self.object.id))
@@ -22,10 +21,13 @@ class TicketDetail(DALMEDetailView):
         except ObjectDoesNotExist:
             raise Http404
 
+    def get_breadcrumb(self):
+        return [('Issue Tickets', '/tickets/'), (self.get_page_title(), '')]
+
 
 @method_decorator(login_required, name='dispatch')
 class TicketList(DALMEListView):
     template_name = 'dalme_app/list_views/tickets.html'
     page_title = 'Issue Tickets'
     dt_config = 'tickets'
-    breadcrumb = [('Project', ''), ('Issue Tickets', '/tickets')]
+    breadcrumb = [('Issue Tickets', '/tickets/')]
