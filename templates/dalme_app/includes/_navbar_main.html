@@ -1,6 +1,15 @@
-<q-toolbar class="text-blue-grey-4 col-grow q-pa-none dalme-nav-menus">
+<q-toolbar class="text-blue-grey-3 col-grow q-pa-none dalme-nav-menus">
   <template v-for="section in mainMenu">
-    <q-btn-dropdown stretch flat size=".75rem" :icon="section.icon" :label="compactMode ? false : section.label" menu-anchor="bottom middle" menu-self="top middle">
+    <q-btn-dropdown
+      stretch
+      flat
+      size=".75rem"
+      :icon="section.icon"
+      :label="compactMode ? false : section.label"
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="small"
+    >
       <q-tooltip v-if="compactMode" v-model="showTooltips">${section.label}</q-tooltip>
       <q-list dense padding class="text-grey-9">
         <template v-for="item in section.children">
@@ -20,6 +29,6 @@
         </template>
       </q-list>
     </q-btn-dropdown>
-    <q-separator dark vertical color="blue-grey-10"></q-separator>
+    <q-separator vertical color="blue-grey-8"></q-separator>
   </template>
 </q-toolbar>
