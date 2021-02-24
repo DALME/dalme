@@ -145,7 +145,7 @@
           </q-btn>
         </q-toolbar>
       </div>
-      <q-bar class="bg-grey-10 text-grey-6 q-px-md text-weight-medium">
+      <q-bar class="bg-grey-3 text-grey-7 q-px-md text-weight-medium">
         {% include "dalme_app/includes/_breadcrumb.html" %}
         <q-space></q-space>
         {% include "dalme_app/includes/_navbar_secondary.html" %}
@@ -169,7 +169,6 @@
     const dalme_base = new Vue({
       el: '#dalme-nav',
       delimiters: ['${', '}'],
-      mounted() {},
       created() {
         window.addEventListener("resize", this.windowResized);
         document.addEventListener("fullscreenchange", function(event) {
@@ -182,7 +181,7 @@
         this.secondaryMenu = this.contextData.secondary_menu;
       },
       data: {
-        apiEndpoint: "{{ api_endpoint}}",
+        apiEndpoint: "{{ api_endpoint }}",
         dbEndpoint: "{{ db_endpoint }}",
         preferences: null,
         breadcrumb: null,
@@ -200,9 +199,7 @@
           { label: 'feature', value: 'feature', color: 'deep-purple-3' },
           { label: 'question', value: 'question', color: 'light-green-3' }
         ],
-      },
-      watch: {
-
+        uploadUrl: '{{ api_endpoint }}/attachments/',
       },
       computed: {
         contextData() {
@@ -212,6 +209,9 @@
         },
         compactMode() {
           return this.windowWidth <= 850;
+        },
+        uploadHeaders() {
+          return [{name: 'X-CSRFToken', value: this.$q.cookies.get('csrftoken')}]
         },
       },
       methods: {
@@ -278,10 +278,10 @@
           }
           return date
         },
-        api_fetch(endpoint, object, paras, callback) {
+        api_fetch(endpoint, object, parameters, callback, pass=null) {
           let url = object ? `${this.apiEndpoint}/${endpoint}/${object}/?format=json` : `${this.apiEndpoint}/${endpoint}/?format=json`;
-          if (paras) {
-            for (const [key, value] of Object.entries(paras)) {
+          if (parameters) {
+            for (const [key, value] of Object.entries(parameters)) {
               url += `&${key}=${value}`;
             }
           }
@@ -292,7 +292,7 @@
               }
               return response.json()
             }).then(data => {
-              callback(data);
+              callback(data, pass);
             }).catch((error) => {
               this.$q.notify({
                 message: `There was a problem communicating with the server. ${error}`,
