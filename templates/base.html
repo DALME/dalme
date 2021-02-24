@@ -331,7 +331,23 @@
               color: 'red-3',
             });
           });
-        }
+        },
+        extend_markdown(md) {
+          const mention = new RegExp(/@(\w+)/, 'g');
+          const ticket = new RegExp(/#(\d+)/, 'g');
+          md.renderer.rules.text = (tokens, idx, options, env, self) => {
+            let content = tokens[idx].content;
+            console.log(mention.test(content))
+            console.log(content.replace(mention, `<a class="mention" href="/users/$1/">$&</a>`))
+            if (mention.test(content)) {
+              content = content.replace(mention, `<a class="mention" href="/users/$1/">$&</a>`)
+            }
+            if (ticket.test(content)) {
+              content = content.replace(ticket, `<a class="ticket" href="/tickets/$1/">$&</a>`)
+            }
+            return content
+          }
+        },
       },
     })
   </script>
