@@ -1,0 +1,25 @@
+<a
+  class="user-popover-link"
+  :href="'/users/' + username + '/'"
+  v-on:mouseover="$refs.u_popover.show()"
+  v-on:mouseleave="$refs.u_popover.hide()"
+>
+  <span v-text="username"></span>
+  <q-menu ref="u_popover" no-parent-event>
+    <q-list>
+      <q-item>
+        <q-item-section top avatar>
+          <q-avatar v-if="avatar" size="40px">
+            <img :src="avatar">
+          </q-avatar>
+          <q-avatar v-else size="40px" icon="fas fa-user" color="light-blue-3" text-color="blue-9">
+          </q-avatar>
+        </q-item-section>
+        <q-item-section>
+          <span class="text-subtitle2 text-weight-bold" v-text="full_name" style="line-height: 20px;"></span>
+          <span class="text-caption" v-text="username + ' (' + id + ')'"></span>
+        </q-item-section>
+      </q-item>
+    </q-list>
+  </q-menu>
+</a>

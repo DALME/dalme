@@ -119,8 +119,13 @@
           </q-item-section>
         </q-item>
         <template v-for="author in metadata.authors">
-          <q-item clickable v-close-popup dense @click="Vue.set(filters, 'creation_user', author.creation_user__id)">
-            <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': filters.creation_user == author.creation_user__id }">${ author.creation_user__profile__full_name }</q-item-section>
+          <q-item clickable v-close-popup dense @click="Vue.set(filters, 'creation_user', author.id)">
+            <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': filters.creation_user == author.id }">
+              <div class="row items-center">
+                <span class="text-weight-medium q-mr-sm" v-text="author.username"></span>
+                <span class="text-grey-6" v-text="author.full_name"></span>
+              </div>
+            </q-item-section>
           </q-item>
         </template>
       </q-list>
@@ -215,12 +220,16 @@
             </div>
           </div>
           <div class="row items-center q-ml-lg">
-            <span v-if="props.row.status == 0" class="text-grey-9">
-              #${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by ${ props.row.creation_user.full_name }
-            </span>
-            <span v-else class="text-grey-9">
-              #${ props.row.id } by ${ props.row.creation_user.full_name } was closed ${ dalme_base.format_date(props.row.closing_date, ['on ', '']) } by ${ props.row.closing_user.full_name }
-            </span>
+            <template v-if="props.row.status == 0">
+              <span  class="text-grey-9">#${ props.row.id } opened ${ dalme_base.format_date(props.row.creation_timestamp, ['on ', '']) } by</span>
+              <a class="user q-ml-xs" :href="'/users/'+props.row.creation_user.username+'/'">${ props.row.creation_user.username }</a>
+            </template>
+            <template v-else>
+              <span class="text-grey-9">#${ props.row.id } by</span>
+              <a class="user q-mx-xs" :href="'/users/'+props.row.creation_user.username+'/'">${ props.row.creation_user.username }</a>
+              <span class="text-grey-9">was closed ${ dalme_base.format_date(props.row.closing_date, ['on ', '']) } by</span>
+              <a class="user q-ml-xs" :href="'/users/'+props.row.closing_user.username+'/'">${ props.row.closing_user.username }</a>
+            </template>
             <q-badge v-if="props.row.url" outline color="light-blue-5" class="q-ml-sm" label="url"></q-badge>
             <q-badge v-if="props.row.file" outline color="brown-5" class="q-ml-sm" label="file"></q-badge>
           </div>

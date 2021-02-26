@@ -346,3 +346,10 @@ a.no-undeline:hover {
   top: 10px;
   left: -16px;
 }
+.user-popover-link {
+  font-weight: 500;
+}
+.user-popover-link:hover {
+  color: #01579b;
+  text-decoration: underline;
+}

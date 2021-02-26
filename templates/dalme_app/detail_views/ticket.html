@@ -37,7 +37,12 @@
                   size="10px"
                   @click="assign_ticket(user.id)"
                 >
-                  <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': dataset.assigned_to && user.id == dataset.assigned_to.id }">${ user.full_name }</q-item-section>
+                  <q-item-section :class="{ 'text-light-blue-10 text-weight-bold': dataset.assigned_to && user.id == dataset.assigned_to.id }">
+                    <div class="row items-center">
+                      <span class="text-weight-medium q-mr-sm" v-text="user.username"></span>
+                      <span class="text-grey-6" v-text="user.full_name"></span>
+                    </div>
+                  </q-item-section>
                 </q-item>
               </template>
               <q-separator spaced></q-separator>
@@ -111,7 +116,7 @@
           :label="dataset.status == 0 ? 'Open' : 'Closed'"
         ></q-chip>
         <span class="text-body2">
-          <a class="text-weight-medium" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.creation_user.username + '/'">${ dataset.creation_user.full_name }</a>
+          <user-popover v-bind="dataset.creation_user"></user-popover>
           opened this ticket ${ dalme_base.format_date(dataset.creation_timestamp, ['on ', '']) }
           ・ ${ dataset.comment_count } comments
         </span>
@@ -133,7 +138,7 @@
               <q-item-section>
                 <q-card flat bordered class="box-left-arrow">
                   <q-card-section class="bg-grey-2 q-py-sm">
-                    <a class="text-weight-medium" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.creation_user.username + '/'">${ dataset.creation_user.full_name }</a>
+                    <user-popover v-bind="dataset.creation_user"></user-popover>
                     commented ${ dalme_base.format_date(dataset.creation_timestamp, ['on ', ''], null, with_time=true) }
                   </q-card-section>
                   <q-separator></q-separator>
@@ -156,7 +161,7 @@
                 <q-item-section>
                   <q-card flat bordered class="box-left-arrow">
                     <q-card-section class="bg-grey-2 q-py-sm">
-                      <a class="text-weight-medium" :href="dalme_base.$data.dbEndpoint + '/users/' + comment.creation_user.username + '/'">${ comment.creation_user.full_name }</a>
+                      <user-popover v-bind="comment.creation_user"></user-popover>
                       commented ${ dalme_base.format_date(comment.creation_timestamp, ['on ', ''], null, with_time=true) }
                     </q-card-section>
                     <q-separator></q-separator>
@@ -178,9 +183,7 @@
           <div class="text-weight-bold text-grey-9 full-width q-mb-sm">Status</div>
           <template v-if="dataset.status == 1">
             Closed ${ dalme_base.format_date(dataset.closing_date, ['on ', '']) } by
-            <a class="text-weight-medium" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.closing_user.username + '/'">
-              ${ dataset.closing_user.full_name }
-            </a>
+            <user-popover v-bind="dataset.closing_user"></user-popover>
           </template>
           <span v-else>Open</span>
         </div>
@@ -188,9 +191,7 @@
         <div class="q-py-md q-px-xs">
           <div class="text-weight-bold text-grey-9 full-width q-mb-sm">Assigned to</div>
           <template v-if="dataset.assigned_to">
-            <a class="text-weight-medium" :href="dalme_base.$data.dbEndpoint + '/users/' + dataset.assigned_to.username + '/'">
-              ${ dataset.assigned_to.full_name }
-            </a>
+            <user-popover v-bind="dataset.assigned_to"></user-popover>
           </template>
           <span v-else>Not assigned</span>
         </div>
@@ -258,6 +259,7 @@
   {{ block.super }}
   <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qmarkdown/dist/index.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/textarea-caret@3.1.0/index.min.js"></script>
+  <script>{% include "dalme_app/includes/components/UserPopover/UserPopover.js" %}</script>
   <script>{% include "dalme_app/includes/components/CommentBox/CommentBox.js" %}</script>
   <script>
     Quasar.iconSet.set(Quasar.iconSet.fontawesomeV5)

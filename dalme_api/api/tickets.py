@@ -26,5 +26,9 @@ class Tickets(DALMEModelViewSet):
         return {
             'open': queryset.filter(status=0).count(),
             'closed': queryset.filter(status=1).count(),
-            'authors': [dict(tup) for tup in {tuple(pair.items()) for pair in Ticket.objects.values('creation_user__id', 'creation_user__profile__full_name')}]
+            'authors': [{
+                'id': tup[0][1],
+                'full_name': tup[1][1],
+                'username': tup[2][1]
+            } for tup in {tuple(pair.items()) for pair in Ticket.objects.values('creation_user__id', 'creation_user__profile__full_name', 'creation_user__username')}]
         }
