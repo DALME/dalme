@@ -25,7 +25,7 @@ feedparser==5.2.1
 geopy==2.0.0
 gunicorn==20.0.4
 kombu==4.6.11
-lxml==4.5.2
+lxml==4.6.3
 mysqlclient==2.0.1
 pandas==1.1.4
 passlib==1.7.3
